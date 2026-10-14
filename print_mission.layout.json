@@ -119,7 +119,7 @@
     },
     "RawMessages!layer": {
       "foxglovePanelTitle": "Layer",
-      "topicPath": "/studio_script/mission_summary.layer_text",
+      "topicPath": "/studio_script/mission_summary.codes.layer_text",
       "diffEnabled": false,
       "diffMethod": "custom",
       "diffTopicPath": "",
@@ -129,7 +129,7 @@
     },
     "Indicator!act": {
       "foxglovePanelTitle": "/act gate",
-      "path": "/studio_script/mission_summary.act_code",
+      "path": "/studio_script/mission_summary.codes.act_code",
       "style": "background",
       "fallbackColor": "#6b7280",
       "fallbackLabel": "no data",
@@ -156,7 +156,7 @@
     },
     "Indicator!operator": {
       "foxglovePanelTitle": "Operator: do now",
-      "path": "/studio_script/mission_summary.operator_wait",
+      "path": "/studio_script/mission_summary.codes.operator_wait",
       "style": "background",
       "fallbackColor": "#6b7280",
       "fallbackLabel": "no data",
@@ -235,9 +235,123 @@
         }
       ]
     },
+    "3D!mission_map": {
+      "foxglovePanelTitle": "Mission map (map frame, from above)",
+      "cameraState": {
+        "distance": 7,
+        "perspective": false,
+        "phi": 0,
+        "thetaOffset": 0,
+        "target": [
+          0,
+          0,
+          0
+        ],
+        "targetOffset": [
+          2.0,
+          0.75,
+          0
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "fovy": 45,
+        "near": 0.01,
+        "far": 1000
+      },
+      "followMode": "follow-none",
+      "followTf": "map",
+      "scene": {
+        "backgroundColor": "#111827",
+        "transforms": {
+          "showLabel": false,
+          "axisScale": 0.05,
+          "editable": false
+        }
+      },
+      "transforms": {
+        "frame:map": {
+          "visible": false
+        },
+        "frame:odom": {
+          "visible": false
+        },
+        "frame:base_link": {
+          "visible": false
+        },
+        "frame:left_sprocket_link": {
+          "visible": false
+        },
+        "frame:right_sprocket_link": {
+          "visible": false
+        },
+        "frame:lift_platform_link": {
+          "visible": false
+        },
+        "frame:print_head_link": {
+          "visible": false
+        },
+        "frame:gps_primary_link": {
+          "visible": false
+        },
+        "frame:gps_secondary_link": {
+          "visible": false
+        },
+        "frame:tm500_imu_link": {
+          "visible": false
+        }
+      },
+      "topics": {
+        "/studio_script/mission_plan": {
+          "visible": true
+        },
+        "/studio_script/robot_pose": {
+          "visible": true
+        },
+        "/studio_script/lookahead_marker": {
+          "visible": true
+        }
+      },
+      "layers": {
+        "grid": {
+          "visible": true,
+          "layerId": "foxglove.Grid",
+          "instanceId": "grid",
+          "label": "Grid (1 m)",
+          "frameId": "map",
+          "size": 20,
+          "divisions": 20,
+          "lineWidth": 1,
+          "color": "#ffffff26",
+          "position": [
+            0,
+            0,
+            -0.01
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "publish": {
+        "type": "point",
+        "poseTopic": "/move_base_simple/goal",
+        "pointTopic": "/clicked_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      },
+      "imageMode": {}
+    },
     "RawMessages!why": {
-      "foxglovePanelTitle": "Why: do now, state and reason, phase, plan, holders",
-      "topicPath": "/studio_script/mission_summary",
+      "foxglovePanelTitle": "Why: do now, reasons, plan, last holder change",
+      "topicPath": "/studio_script/mission_summary.why",
       "diffEnabled": false,
       "diffMethod": "custom",
       "diffTopicPath": "",
@@ -245,48 +359,159 @@
       "expansion": "all",
       "fontSize": 13
     },
-    "StateTransitions!timeline": {
-      "foxglovePanelTitle": "Mission timeline",
+    "Plot!linear": {
+      "foxglovePanelTitle": "Linear speed (m/s): commanded vs actual",
       "paths": [
         {
-          "value": "/system_manager/state.state",
+          "value": "/speed_limit.speed_limit",
           "enabled": true,
           "timestampMethod": "receiveTime",
-          "label": "SM"
+          "label": "Segment limit (MC)",
+          "color": "#6b7280",
+          "showLine": false
         },
         {
-          "value": "/mission_controller/state.state",
+          "value": "/mission_controller/nav_cmd_vel.twist.linear.x",
           "enabled": true,
           "timestampMethod": "receiveTime",
-          "label": "MC"
+          "label": "Nav2 command",
+          "color": "#d97706"
         },
         {
-          "value": "/mission_controller/mission_state.state",
+          "value": "/act/drive/driver/cmd_vel.twist.linear.x",
           "enabled": true,
           "timestampMethod": "receiveTime",
-          "label": "LOP"
+          "label": "Commanded (to drive)",
+          "color": "#2563eb",
+          "lineSize": 2
         },
         {
-          "value": "/mission_controller/mission_state.current_layer",
+          "value": "/act/drive/odom.twist.twist.linear.x",
           "enabled": true,
           "timestampMethod": "receiveTime",
-          "label": "Layer"
-        },
-        {
-          "value": "/studio_script/mission_summary.operator_wait",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Operator"
-        },
-        {
-          "value": "/studio_script/mission_summary.act_code",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "/act"
+          "label": "Actual (odometry)",
+          "color": "#16a34a",
+          "lineSize": 2
         }
       ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
       "isSynced": true,
-      "showPoints": true
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 120,
+      "sidebarDimension": 240
+    },
+    "Plot!rotation": {
+      "foxglovePanelTitle": "Rotation rate (rad/s): commanded vs actual",
+      "paths": [
+        {
+          "value": "/mission_controller/nav_cmd_vel.twist.angular.z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Nav2 command",
+          "color": "#d97706"
+        },
+        {
+          "value": "/act/drive/driver/cmd_vel.twist.angular.z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Commanded (to drive)",
+          "color": "#2563eb",
+          "lineSize": 2
+        },
+        {
+          "value": "/act/drive/odom.twist.twist.angular.z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Actual (odometry)",
+          "color": "#16a34a",
+          "lineSize": 2
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 120,
+      "sidebarDimension": 240
+    },
+    "Plot!lift": {
+      "foxglovePanelTitle": "Lift height (mm): target vs actual",
+      "paths": [
+        {
+          "value": "/act/lift/state.target_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Target",
+          "color": "#d97706",
+          "lineSize": 2
+        },
+        {
+          "value": "/act/lift/state.position_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Actual",
+          "color": "#16a34a",
+          "lineSize": 2
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 300,
+      "sidebarDimension": 240
+    },
+    "Plot!vibe": {
+      "foxglovePanelTitle": "Vibe frequency (Hz): commanded vs actual",
+      "paths": [
+        {
+          "value": "/studio_script/phcu_commands.vibe_hz_setpoint",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Setpoint",
+          "color": "#6b7280"
+        },
+        {
+          "value": "/studio_script/phcu_commands.vibe_hz_command",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Commanded (setpoint while run, else 0)",
+          "color": "#d97706",
+          "lineSize": 2
+        },
+        {
+          "value": "/act/vibe/state.hz_actual",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Actual (VFD)",
+          "color": "#16a34a",
+          "lineSize": 2
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 300,
+      "sidebarDimension": 240,
+      "minYValue": 0
+    },
+    "Table!actuators": {
+      "foxglovePanelTitle": "Actuators: holder, health, ready, state",
+      "topicPath": "/studio_script/actuator_status.rows"
     },
     "Plot!progress": {
       "foxglovePanelTitle": "Print progress (%)",
@@ -296,7 +521,8 @@
           "enabled": true,
           "timestampMethod": "receiveTime",
           "label": "Planned path length done (%)",
-          "color": "#16a34a"
+          "color": "#16a34a",
+          "lineSize": 2
         }
       ],
       "showLegend": true,
@@ -312,420 +538,7 @@
       "maxYValue": 100
     },
     "RosOut!mission_log": {
-      "foxglovePanelTitle": "Mission log (SM, MC, arbiter, path executor)",
-      "topicToRender": "/rosout",
-      "searchTerms": [],
-      "minLogLevel": 2,
-      "nameFilter": {
-        "controller_server": {
-          "visible": false
-        },
-        "diffbot_base_controller": {
-          "visible": false
-        },
-        "controller_manager": {
-          "visible": false
-        },
-        "controller_manager.hardware_component.system.dcu": {
-          "visible": false
-        },
-        "controller_manager.pal_statistics": {
-          "visible": false
-        },
-        "resource_manager": {
-          "visible": false
-        },
-        "rclcpp": {
-          "visible": false
-        },
-        "local_costmap.local_costmap": {
-          "visible": false
-        },
-        "lifecycle_manager_navigation": {
-          "visible": false
-        },
-        "map_server": {
-          "visible": false
-        },
-        "map_io": {
-          "visible": false
-        },
-        "phcu_node": {
-          "visible": false
-        },
-        "signal_tower": {
-          "visible": false
-        },
-        "watchdog": {
-          "visible": false
-        },
-        "mock_rc": {
-          "visible": false
-        },
-        "dcu": {
-          "visible": false
-        },
-        "ekf_local": {
-          "visible": false
-        },
-        "robot_state_publisher": {
-          "visible": false
-        },
-        "joint_state_broadcaster": {
-          "visible": false
-        },
-        "map_to_odom": {
-          "visible": false
-        },
-        "spawner_diffbot_base_controller": {
-          "visible": false
-        },
-        "spawner_joint_state_broadcaster": {
-          "visible": false
-        },
-        "pluginlib.ClassLoader": {
-          "visible": false
-        },
-        "kdl_parser": {
-          "visible": false
-        },
-        "foxglove_bridge": {
-          "visible": false
-        },
-        "etk_api_bridge": {
-          "visible": false
-        },
-        "bench_mon": {
-          "visible": false
-        }
-      }
-    },
-    "3D!map": {
-      "foxglovePanelTitle": "Robot in map: path (green), lookahead (orange), trail (blue)",
-      "cameraState": {
-        "distance": 6,
-        "perspective": true,
-        "phi": 50,
-        "thetaOffset": 45,
-        "target": [
-          0.5,
-          0,
-          0
-        ],
-        "targetOffset": [
-          0,
-          0,
-          0
-        ],
-        "targetOrientation": [
-          0,
-          0,
-          0,
-          1
-        ],
-        "fovy": 45,
-        "near": 0.01,
-        "far": 5000
-      },
-      "followMode": "follow-none",
-      "followTf": "map",
-      "scene": {
-        "transforms": {
-          "labelSize": 0.06,
-          "axisScale": 0.4
-        }
-      },
-      "transforms": {},
-      "topics": {
-        "/received_global_plan": {
-          "visible": true,
-          "type": "line",
-          "lineWidth": 0.04,
-          "gradient": [
-            "#22c55eff",
-            "#22c55eff"
-          ]
-        },
-        "/lookahead_collision_arc": {
-          "visible": true,
-          "type": "line",
-          "lineWidth": 0.015,
-          "gradient": [
-            "#f59e0bb0",
-            "#f59e0bb0"
-          ]
-        },
-        "/studio_script/lookahead_marker": {
-          "visible": true
-        },
-        "/studio_script/odom_trail": {
-          "visible": true
-        },
-        "/local_costmap/published_footprint": {
-          "visible": true,
-          "lineWidth": 0.02,
-          "color": "#e5e7eb"
-        },
-        "/map": {
-          "visible": true,
-          "alpha": 0.3
-        },
-        "/local_costmap/costmap": {
-          "visible": false
-        }
-      },
-      "layers": {
-        "grid": {
-          "visible": true,
-          "layerId": "foxglove.Grid",
-          "instanceId": "grid",
-          "label": "Grid (1 m)",
-          "frameId": "map",
-          "size": 10,
-          "divisions": 10,
-          "lineWidth": 1,
-          "color": "#248eff40",
-          "position": [
-            0,
-            0,
-            0
-          ],
-          "rotation": [
-            0,
-            0,
-            0
-          ]
-        },
-        "robot": {
-          "visible": true,
-          "layerId": "foxglove.Urdf",
-          "instanceId": "robot",
-          "label": "Robot (URDF from /robot_description)",
-          "sourceType": "topic",
-          "topic": "/robot_description",
-          "framePrefix": "",
-          "displayMode": "auto"
-        }
-      },
-      "publish": {
-        "type": "point",
-        "poseTopic": "/move_base_simple/goal",
-        "pointTopic": "/clicked_point",
-        "poseEstimateTopic": "/initialpose",
-        "poseEstimateXDeviation": 0.5,
-        "poseEstimateYDeviation": 0.5,
-        "poseEstimateThetaDeviation": 0.26179939
-      },
-      "imageMode": {}
-    },
-    "Plot!speed": {
-      "foxglovePanelTitle": "Speed (m/s): limit, Nav2, to drive, actual",
-      "paths": [
-        {
-          "value": "/speed_limit.speed_limit",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Segment limit",
-          "color": "#6b7280"
-        },
-        {
-          "value": "/mission_controller/nav_cmd_vel.twist.linear.x",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Nav2 command",
-          "color": "#d97706"
-        },
-        {
-          "value": "/act/drive/driver/cmd_vel.twist.linear.x",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Arbiter to drive",
-          "color": "#0891b2"
-        },
-        {
-          "value": "/odometry/local.twist.twist.linear.x",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Actual (EKF)",
-          "color": "#16a34a"
-        }
-      ],
-      "showLegend": true,
-      "legendDisplay": "top",
-      "showPlotValuesInLegend": true,
-      "showXAxisLabels": true,
-      "showYAxisLabels": true,
-      "isSynced": true,
-      "xAxisVal": "timestamp",
-      "followingViewWidth": 180,
-      "sidebarDimension": 240
-    },
-    "Plot!segment": {
-      "foxglovePanelTitle": "Segment: progress (0 to 1), distance to end (m)",
-      "paths": [
-        {
-          "value": "/mission_controller/print_action/_action/feedback.feedback.segment_progress",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Progress",
-          "color": "#16a34a"
-        },
-        {
-          "value": "/path_executor/execute_path/_action/feedback.feedback.distance_to_goal",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Distance to end (m)",
-          "color": "#2563eb"
-        }
-      ],
-      "showLegend": true,
-      "legendDisplay": "top",
-      "showPlotValuesInLegend": true,
-      "showXAxisLabels": true,
-      "showYAxisLabels": true,
-      "isSynced": true,
-      "xAxisVal": "timestamp",
-      "followingViewWidth": 180,
-      "sidebarDimension": 240,
-      "minYValue": 0
-    },
-    "StateTransitions!drive_chain": {
-      "foxglovePanelTitle": "Drive chain",
-      "paths": [
-        {
-          "value": "/path_executor/status.data",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Path executor"
-        },
-        {
-          "value": "/studio_script/mission_summary.drive_holder",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Drive holder"
-        },
-        {
-          "value": "/act/drive/state.energized",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Drive energized"
-        }
-      ],
-      "isSynced": true,
-      "showPoints": true
-    },
-    "Table!actuators": {
-      "foxglovePanelTitle": "Actuators: holder, health, ready, state",
-      "topicPath": "/studio_script/actuator_status.rows"
-    },
-    "StateTransitions!control": {
-      "foxglovePanelTitle": "Actuator timeline",
-      "paths": [
-        {
-          "value": "/studio_script/mission_summary.act_code",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "/act"
-        },
-        {
-          "value": "/studio_script/mission_summary.drive_holder",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Drive holder"
-        },
-        {
-          "value": "/studio_script/mission_summary.lift_holder",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Lift holder"
-        },
-        {
-          "value": "/studio_script/mission_summary.vibe_holder",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Vibe holder"
-        },
-        {
-          "value": "/act/drive/state.energized",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Drive energized"
-        },
-        {
-          "value": "/act/lift/state.motion",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Lift motion"
-        },
-        {
-          "value": "/studio_script/phcu_commands.vibe_run",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Vibe run"
-        }
-      ],
-      "isSynced": true,
-      "showPoints": true
-    },
-    "Plot!lift": {
-      "foxglovePanelTitle": "Lift height (mm)",
-      "paths": [
-        {
-          "value": "/act/lift/state.position_mm",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Position",
-          "color": "#16a34a"
-        },
-        {
-          "value": "/act/lift/state.target_mm",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Target",
-          "color": "#d97706"
-        }
-      ],
-      "showLegend": true,
-      "legendDisplay": "top",
-      "showPlotValuesInLegend": true,
-      "showXAxisLabels": true,
-      "showYAxisLabels": true,
-      "isSynced": true,
-      "xAxisVal": "timestamp",
-      "followingViewWidth": 180,
-      "sidebarDimension": 240
-    },
-    "Plot!vibe": {
-      "foxglovePanelTitle": "Vibe frequency (Hz)",
-      "paths": [
-        {
-          "value": "/act/vibe/state.hz_actual",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Actual (VFD)",
-          "color": "#16a34a"
-        },
-        {
-          "value": "/studio_script/phcu_commands.vibe_hz_setpoint",
-          "enabled": true,
-          "timestampMethod": "receiveTime",
-          "label": "Setpoint",
-          "color": "#d97706"
-        }
-      ],
-      "showLegend": true,
-      "legendDisplay": "top",
-      "showPlotValuesInLegend": true,
-      "showXAxisLabels": true,
-      "showYAxisLabels": true,
-      "isSynced": true,
-      "xAxisVal": "timestamp",
-      "followingViewWidth": 180,
-      "sidebarDimension": 240,
-      "minYValue": 0
-    },
-    "RosOut!mission_log_full": {
-      "foxglovePanelTitle": "Mission nodes: INFO and up",
+      "foxglovePanelTitle": "Mission nodes (SM, MC, arbiter, path executor): INFO and up",
       "topicToRender": "/rosout",
       "searchTerms": [],
       "minLogLevel": 2,
@@ -820,59 +633,6 @@
       "minLogLevel": 3,
       "nameFilter": {}
     },
-    "Indicator!operator_warning": {
-      "foxglovePanelTitle": "WARNING: mock mode only",
-      "path": "/system_manager/state.state",
-      "style": "background",
-      "fallbackColor": "#dc2626",
-      "fallbackLabel": "WARNING: these buttons call services on the connected system. On the robot, they move the robot. Use them in mock mode only.",
-      "rules": []
-    },
-    "CallService!request_arm": {
-      "foxglovePanelTitle": "1 Request arm",
-      "serviceName": "/system_manager/request_arm",
-      "requestPayload": "{}",
-      "layout": "vertical",
-      "buttonText": "Request arm",
-      "buttonTooltip": "The MC asks for drive, lift and vibe. Then press GRANT.",
-      "buttonColor": "#2563eb"
-    },
-    "CallService!grant": {
-      "foxglovePanelTitle": "2 GRANT (plays the RC)",
-      "serviceName": "/act/system/command",
-      "requestPayload": "{\n  \"command\": 3\n}",
-      "layout": "vertical",
-      "buttonText": "GRANT",
-      "buttonTooltip": "Calls /act/system/command with command 3 (GRANT): the arbiter gives every pending request to its client.",
-      "buttonColor": "#d97706"
-    },
-    "CallService!clear_error": {
-      "foxglovePanelTitle": "Clear error",
-      "serviceName": "/system_manager/clear_error_request",
-      "requestPayload": "{}",
-      "layout": "vertical",
-      "buttonText": "Clear error",
-      "buttonTooltip": "SM ERROR -> IDLE. Clears the loaded plan.",
-      "buttonColor": "#dc2626"
-    },
-    "CallService!green_light": {
-      "foxglovePanelTitle": "3 Green light (start_layer)",
-      "serviceName": "/system_manager/start_layer",
-      "requestPayload": "{}",
-      "layout": "vertical",
-      "buttonText": "Green light",
-      "buttonTooltip": "Only in READY_TO_START. The MC starts the print segment.",
-      "buttonColor": "#16a34a"
-    },
-    "CallService!cut_done": {
-      "foxglovePanelTitle": "4 Cut done",
-      "serviceName": "/system_manager/cut_done",
-      "requestPayload": "{}",
-      "layout": "vertical",
-      "buttonText": "Cut done",
-      "buttonTooltip": "Only in WAITING_TO_RETURN. The MC starts the return segment.",
-      "buttonColor": "#16a34a"
-    },
     "Tab!mission_tabs": {
       "activeTabIdx": 0,
       "tabs": [
@@ -880,95 +640,47 @@
           "title": "1 Mission",
           "layout": {
             "direction": "row",
-            "first": {
+            "first": "3D!mission_map",
+            "second": {
               "direction": "column",
               "first": "RawMessages!why",
-              "second": "RosOut!mission_log",
-              "splitPercentage": 58.0
-            },
-            "second": {
-              "direction": "column",
-              "first": "StateTransitions!timeline",
-              "second": "Plot!progress",
-              "splitPercentage": 62.0
-            },
-            "splitPercentage": 55.0
-          }
-        },
-        {
-          "title": "2 Robot and path",
-          "layout": {
-            "direction": "row",
-            "first": "3D!map",
-            "second": {
-              "direction": "column",
-              "first": "Plot!speed",
               "second": {
                 "direction": "column",
-                "first": "Plot!segment",
-                "second": "StateTransitions!drive_chain",
-                "splitPercentage": 56.9
+                "first": "Plot!linear",
+                "second": "Plot!rotation",
+                "splitPercentage": 50.0
               },
-              "splitPercentage": 42.0
-            },
-            "splitPercentage": 60.0
-          }
-        },
-        {
-          "title": "3 Actuators",
-          "layout": {
-            "direction": "row",
-            "first": {
-              "direction": "column",
-              "first": "Table!actuators",
-              "second": "StateTransitions!control",
-              "splitPercentage": 42.0
-            },
-            "second": {
-              "direction": "column",
-              "first": "Plot!lift",
-              "second": "Plot!vibe",
-              "splitPercentage": 50.0
+              "splitPercentage": 30.0
             },
             "splitPercentage": 58.0
           }
         },
         {
-          "title": "4 Logs",
+          "title": "2 Printhead and progress",
           "layout": {
-            "direction": "column",
-            "first": "RosOut!mission_log_full",
-            "second": "RosOut!warnings_log",
-            "splitPercentage": 60.0
+            "direction": "row",
+            "first": {
+              "direction": "column",
+              "first": "Plot!lift",
+              "second": "Plot!vibe",
+              "splitPercentage": 50.0
+            },
+            "second": {
+              "direction": "column",
+              "first": "Table!actuators",
+              "second": "Plot!progress",
+              "splitPercentage": 55.0
+            },
+            "splitPercentage": 55.0
           }
         },
         {
-          "title": "5 Operator (mock only)",
+          "title": "3 Logs",
           "layout": {
             "direction": "column",
-            "first": "Indicator!operator_warning",
-            "second": {
-              "direction": "column",
-              "first": {
-                "direction": "row",
-                "first": "CallService!request_arm",
-                "second": {
-                  "direction": "row",
-                  "first": "CallService!grant",
-                  "second": "CallService!clear_error",
-                  "splitPercentage": 50.0
-                },
-                "splitPercentage": 33.33
-              },
-              "second": {
-                "direction": "row",
-                "first": "CallService!green_light",
-                "second": "CallService!cut_done",
-                "splitPercentage": 50.0
-              },
-              "splitPercentage": 50.0
-            },
-            "splitPercentage": 18.0
+            "first": "RosOut!mission_log",
+            "second": "RosOut!warnings_log",
+            "splitPercentage": 60.0
           }
         }
       ]
@@ -978,21 +690,25 @@
   "userNodes": {
     "b6f1c2a0-0001-4d6e-9a51-print0mission": {
       "name": "mission_summary",
-      "sourceCode": "// Mission summary for the print_mission layout.\n//\n// Reads the System Manager (SM) state, the Mission Controller (MC) controller and mission\n// states, and the /act arbiter status. Publishes one message: the action that the operator\n// must do now, each state with its reason, the layer, and the actuator holders.\n//\n// The \"Why\" panel shows the first fields, in this order. The band tiles and the State\n// Transitions panels use the short fields at the end.\n//\n// Source: scripts/mission_summary.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/system_manager/state\",\n  \"/mission_controller/state\",\n  \"/mission_controller/mission_state\",\n  \"/act/status\",\n];\nexport const output = \"/studio_script/mission_summary\";\n\ntype Output = {\n  // What the operator must do now, in words.\n  do_now: string;\n  // State name and its reason, for example \"IDLE: Plan ... loaded, waiting for ...\".\n  sm: string;\n  mc: string;\n  // Layer Operation Phase (LOP) and layer, for example \"3 PRINTING, layer 2 / 3\".\n  phase: string;\n  plan: string;\n  act: string;\n  holders: string;\n  waiting_for_grant: string;\n  last_change: string;\n  // Short code for the \"Operator\" tile: none, wait, upload, arm, grant, request_arm,\n  // execute, green_light, cut_done, control_lost, clear_error, rc.\n  operator_wait: string;\n  // Short code for the \"/act\" tile: armed, disarmed, rc_lost.\n  act_code: string;\n  // Text for the \"Layer\" tile, for example \"2 / 3\".\n  layer_text: string;\n  // Holder of each actuator, for the State Transitions panels.\n  drive_holder: string;\n  lift_holder: string;\n  vibe_holder: string;\n};\n\ntype Event =\n  | Input<\"/system_manager/state\">\n  | Input<\"/mission_controller/state\">\n  | Input<\"/mission_controller/mission_state\">\n  | Input<\"/act/status\">;\n\ntype SmState = Input<\"/system_manager/state\">[\"message\"];\ntype McState = Input<\"/mission_controller/state\">[\"message\"];\ntype MissionState = Input<\"/mission_controller/mission_state\">[\"message\"];\ntype ActStatus = Input<\"/act/status\">[\"message\"];\ntype ActuatorStatus = ActStatus[\"drive\"];\n\n// Constants of cpr_interfaces/msg/{SystemManagerState,MissionControllerState,MissionState}.\nconst SM_NAMES = [\"IDLE\", \"READY\", \"OPERATING\", \"ERROR\"];\nconst MC_NAMES = [\"UNARMED\", \"PARTIALLY_ARMED\", \"ARMED\", \"OPERATING\", \"ERROR\"];\nconst LOP_NAMES = [\"NONE\", \"ALIGNING\", \"READY_TO_START\", \"PRINTING\", \"WAITING_TO_RETURN\", \"RETURNING\"];\n// Constants of etk_actuation_interfaces/msg/ActuatorStatus (change_reason).\nconst CHANGE_NAMES = [\"NONE\", \"TAKEN\", \"RELEASED\", \"REVOKED\", \"DISARMED\", \"GRANTED\"];\n\nconst SM_IDLE = 0;\nconst SM_READY = 1;\nconst SM_OPERATING = 2;\nconst SM_ERROR = 3;\nconst MC_ARMED = 2;\nconst MC_OPERATING = 3;\nconst LOP_NONE = 0;\nconst LOP_ALIGNING = 1;\nconst LOP_READY_TO_START = 2;\nconst LOP_PRINTING = 3;\nconst LOP_WAITING_TO_RETURN = 4;\nconst LOP_RETURNING = 5;\n// etk_actuation_interfaces/msg/Priority\nconst LEVEL_MC = 50;\nconst LEVEL_RC = 255;\n\nconst NO_DATA = \"(no data)\";\n\n// The last message of each input. The script runs once for each input message.\nlet sm: SmState | undefined;\nlet mc: McState | undefined;\nlet mission: MissionState | undefined;\nlet act: ActStatus | undefined;\n\nfunction name(names: string[], value: number | undefined): string {\n  if (value === undefined) {\n    return NO_DATA;\n  }\n  return names[value] ?? `UNKNOWN (${value})`;\n}\n\n// \"NAME: reason\", or \"NAME\" when the reason is empty.\nfunction withReason(stateName: string, reason: string | undefined): string {\n  return reason !== undefined && reason !== \"\" ? `${stateName}: ${reason}` : stateName;\n}\n\n// Priority level -> client. Level 255 is the RC baseline: no client holds the actuator.\nfunction levelName(level: number): string {\n  switch (level) {\n    case LEVEL_RC:\n      return \"RC\";\n    case 100:\n      return \"UI\";\n    case LEVEL_MC:\n      return \"MC\";\n    case 0:\n      return \"none\";\n    default:\n      return `level ${level}`;\n  }\n}\n\nfunction holderShort(status: ActuatorStatus): string {\n  return status.level === LEVEL_RC ? \"RC (no client)\" : `${levelName(status.level)} (${status.level})`;\n}\n\n// Holder, and the client that waits for GRANT. One value for each situation, so that the\n// State Transitions panel shows a new block at each change.\nfunction holder(status: ActuatorStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  if (status.requested_level > 0) {\n    return `${holderShort(status)}, ${levelName(status.requested_level)} waits for GRANT`;\n  }\n  return holderShort(status);\n}\n\nfunction holders(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  return [\n    `drive ${holderShort(status.drive)}`,\n    `lift ${holderShort(status.lift)}`,\n    `vibe ${holderShort(status.vibe)}`,\n  ].join(\", \");\n}\n\nfunction pendingRequests(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  const parts: string[] = [];\n  const actuators: [string, ActuatorStatus][] = [\n    [\"drive\", status.drive],\n    [\"lift\", status.lift],\n    [\"vibe\", status.vibe],\n    [\"gate\", status.gate],\n  ];\n  for (const [actuator, s] of actuators) {\n    if (s.requested_level > 0) {\n      parts.push(`${actuator}: ${levelName(s.requested_level)} (${s.requested_level})`);\n    }\n  }\n  return parts.length > 0 ? parts.join(\", \") : \"none\";\n}\n\nfunction lastChange(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  return [\n    `drive ${name(CHANGE_NAMES, status.drive.change_reason)}`,\n    `lift ${name(CHANGE_NAMES, status.lift.change_reason)}`,\n    `vibe ${name(CHANGE_NAMES, status.vibe.change_reason)}`,\n  ].join(\", \");\n}\n\nfunction mcRequestsPending(status: ActStatus): boolean {\n  return [status.drive, status.lift, status.vibe].some((s) => s.requested_level === LEVEL_MC);\n}\n\n// [code, text]: what the operator must do now.\nfunction operatorAction(): [string, string] {\n  if (sm === undefined || act === undefined) {\n    return [\"wait\", \"Wait for /system_manager/state and /act/status.\"];\n  }\n  if (!act.rc_present) {\n    return [\"rc\", \"Switch on the RC. The arbiter gets no deadman, so /act is DISARMED.\"];\n  }\n  if (sm.state === SM_ERROR) {\n    return [\"clear_error\", \"Read the SM reason. Fix the cause. Then call /system_manager/clear_error_request.\"];\n  }\n  if (sm.state === SM_IDLE) {\n    if (sm.current_plan_id === \"\") {\n      return [\"upload\", \"Upload a print plan: /system_manager/upload_print_plan (GUI or CLI).\"];\n    }\n    if (!act.armed) {\n      return [\"arm\", \"ARM the /act layer on the RC: hold D-pad Up.\"];\n    }\n    if (mcRequestsPending(act)) {\n      return [\"grant\", \"Press GRANT on the RC (D-pad Right). The MC asks for the drive, the lift and the vibe.\"];\n    }\n    if (mc !== undefined && mc.state !== MC_ARMED) {\n      return [\"request_arm\", \"The MC does not hold all three actuators. Call /system_manager/request_arm, then press GRANT.\"];\n    }\n    return [\"wait\", \"Wait. The SM goes to READY at the next MC state message.\"];\n  }\n  if (sm.state === SM_READY) {\n    return [\"execute\", \"Start the print: send a goal to the /system_manager/execute_plan action.\"];\n  }\n  if (sm.state === SM_OPERATING) {\n    if (mc !== undefined && mc.state === MC_OPERATING && mc.message !== \"\") {\n      return [\n        \"control_lost\",\n        `The MC reports \"${mc.message}\". The print continues or fails. To get control back: /system_manager/request_arm, then GRANT.`,\n      ];\n    }\n    switch (mission?.state) {\n      case LOP_ALIGNING:\n        return [\"none\", \"No action. The lift goes to the alignment height, then the robot drives to the layer start.\"];\n      case LOP_READY_TO_START:\n        return [\"green_light\", \"Check the robot at the layer start. Then give the green light: /system_manager/start_layer.\"];\n      case LOP_PRINTING:\n        return [\"none\", \"No action. The lift goes to the print height, then the robot prints the layer.\"];\n      case LOP_WAITING_TO_RETURN:\n        return [\"cut_done\", \"Cut the wall end. Then confirm: /system_manager/cut_done.\"];\n      case LOP_RETURNING:\n        return [\"none\", \"No action. The robot drives the return segment.\"];\n      default:\n        return [\"wait\", \"Wait for the MC mission state.\"];\n    }\n  }\n  return [\"wait\", `Unknown SM state ${sm.state}.`];\n}\n\nfunction actCode(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return \"\";\n  }\n  if (!status.rc_present) {\n    return \"rc_lost\";\n  }\n  return status.armed ? \"armed\" : \"disarmed\";\n}\n\nexport default function script(event: Event): Output {\n  switch (event.topic) {\n    case \"/system_manager/state\":\n      sm = event.message;\n      break;\n    case \"/mission_controller/state\":\n      mc = event.message;\n      break;\n    case \"/mission_controller/mission_state\":\n      mission = event.message;\n      break;\n    case \"/act/status\":\n      act = event.message;\n      break;\n  }\n\n  const [code, text] = operatorAction();\n\n  let layerText = \"-\";\n  if (mission !== undefined && mission.total_layers > 0) {\n    layerText = `${mission.current_layer} / ${mission.total_layers}`;\n  }\n  let phase = NO_DATA;\n  if (mission !== undefined) {\n    const lop = name(LOP_NAMES, mission.state);\n    phase = mission.state === LOP_NONE ? lop : `${mission.state} ${lop}, layer ${layerText}`;\n  }\n  let actText = NO_DATA;\n  if (act !== undefined) {\n    actText = `${act.armed ? \"ARMED\" : \"DISARMED\"}, RC ${act.rc_present ? \"present\" : \"NOT present\"}`;\n  }\n  let plan = NO_DATA;\n  if (sm !== undefined) {\n    plan = sm.current_plan_id !== \"\" ? sm.current_plan_id : \"(none)\";\n  }\n\n  return {\n    do_now: text,\n    sm: withReason(name(SM_NAMES, sm?.state), sm?.message),\n    mc: withReason(name(MC_NAMES, mc?.state), mc?.message),\n    phase,\n    plan,\n    act: actText,\n    holders: holders(act),\n    waiting_for_grant: pendingRequests(act),\n    last_change: lastChange(act),\n    operator_wait: code,\n    act_code: actCode(act),\n    layer_text: layerText,\n    drive_holder: holder(act?.drive),\n    lift_holder: holder(act?.lift),\n    vibe_holder: holder(act?.vibe),\n  };\n}\n"
+      "sourceCode": "// Mission summary for the print_mission layout.\n//\n// Reads the System Manager (SM) state, the Mission Controller (MC) controller and mission\n// states, and the /act arbiter status. Publishes one message: the action that the operator\n// must do now, the reason for each state, the plan and the last holder change.\n//\n// The band tiles show the states, from the fields of \"codes\" and from the state topics. The\n// \"Why\" panel shows the fields of \"why\": the text that the tiles cannot show.\n//\n// Source: scripts/mission_summary.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/system_manager/state\",\n  \"/mission_controller/state\",\n  \"/mission_controller/mission_state\",\n  \"/act/status\",\n];\nexport const output = \"/studio_script/mission_summary\";\n\ntype Why = {\n  // What the operator must do now, in words.\n  do_now: string;\n  // The reason for the state, for example \"Plan ... loaded, waiting for ...\". The state name\n  // is in the band.\n  sm_reason: string;\n  mc_reason: string;\n  plan: string;\n  // Why the actuators changed holder last, for example \"drive GRANTED, lift GRANTED, ...\".\n  last_change: string;\n};\n\ntype Codes = {\n  // Short code for the \"Operator\" tile: none, wait, upload, arm, grant, request_arm,\n  // execute, green_light, cut_done, control_lost, clear_error, rc.\n  operator_wait: string;\n  // Short code for the \"/act\" tile: armed, disarmed, rc_lost.\n  act_code: string;\n  // Text for the \"Layer\" tile, for example \"2 / 3\".\n  layer_text: string;\n};\n\ntype Output = {\n  why: Why;\n  codes: Codes;\n};\n\ntype Event =\n  | Input<\"/system_manager/state\">\n  | Input<\"/mission_controller/state\">\n  | Input<\"/mission_controller/mission_state\">\n  | Input<\"/act/status\">;\n\ntype SmState = Input<\"/system_manager/state\">[\"message\"];\ntype McState = Input<\"/mission_controller/state\">[\"message\"];\ntype MissionState = Input<\"/mission_controller/mission_state\">[\"message\"];\ntype ActStatus = Input<\"/act/status\">[\"message\"];\n\n// Constants of etk_actuation_interfaces/msg/ActuatorStatus (change_reason).\nconst CHANGE_NAMES = [\"NONE\", \"TAKEN\", \"RELEASED\", \"REVOKED\", \"DISARMED\", \"GRANTED\"];\n\nconst SM_IDLE = 0;\nconst SM_READY = 1;\nconst SM_OPERATING = 2;\nconst SM_ERROR = 3;\nconst MC_ARMED = 2;\nconst MC_OPERATING = 3;\nconst LOP_ALIGNING = 1;\nconst LOP_READY_TO_START = 2;\nconst LOP_PRINTING = 3;\nconst LOP_WAITING_TO_RETURN = 4;\nconst LOP_RETURNING = 5;\n// etk_actuation_interfaces/msg/Priority\nconst LEVEL_MC = 50;\n\nconst NO_DATA = \"(no data)\";\n\n// The last message of each input. The script runs once for each input message.\nlet sm: SmState | undefined;\nlet mc: McState | undefined;\nlet mission: MissionState | undefined;\nlet act: ActStatus | undefined;\n\nfunction name(names: string[], value: number | undefined): string {\n  if (value === undefined) {\n    return NO_DATA;\n  }\n  return names[value] ?? `UNKNOWN (${value})`;\n}\n\n// The reason, \"(none)\" when it is empty.\nfunction reason(text: string | undefined): string {\n  if (text === undefined) {\n    return NO_DATA;\n  }\n  return text !== \"\" ? text : \"(none)\";\n}\n\nfunction lastChange(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  return [\n    `drive ${name(CHANGE_NAMES, status.drive.change_reason)}`,\n    `lift ${name(CHANGE_NAMES, status.lift.change_reason)}`,\n    `vibe ${name(CHANGE_NAMES, status.vibe.change_reason)}`,\n  ].join(\", \");\n}\n\nfunction mcRequestsPending(status: ActStatus): boolean {\n  return [status.drive, status.lift, status.vibe].some((s) => s.requested_level === LEVEL_MC);\n}\n\n// [code, text]: what the operator must do now.\nfunction operatorAction(): [string, string] {\n  if (sm === undefined || act === undefined) {\n    return [\"wait\", \"Wait for /system_manager/state and /act/status.\"];\n  }\n  if (!act.rc_present) {\n    return [\"rc\", \"Switch on the RC. The arbiter gets no deadman, so /act is DISARMED.\"];\n  }\n  if (sm.state === SM_ERROR) {\n    return [\"clear_error\", \"Read the SM reason. Fix the cause. Then call /system_manager/clear_error_request.\"];\n  }\n  if (sm.state === SM_IDLE) {\n    if (sm.current_plan_id === \"\") {\n      return [\"upload\", \"Upload a print plan: /system_manager/upload_print_plan (GUI or CLI).\"];\n    }\n    if (!act.armed) {\n      return [\"arm\", \"ARM the /act layer on the RC: hold D-pad Up.\"];\n    }\n    if (mcRequestsPending(act)) {\n      return [\"grant\", \"Press GRANT on the RC (D-pad Right). The MC asks for the drive, the lift and the vibe.\"];\n    }\n    if (mc !== undefined && mc.state !== MC_ARMED) {\n      return [\"request_arm\", \"The MC does not hold all three actuators. Call /system_manager/request_arm, then press GRANT.\"];\n    }\n    return [\"wait\", \"Wait. The SM goes to READY at the next MC state message.\"];\n  }\n  if (sm.state === SM_READY) {\n    return [\"execute\", \"Start the print: send a goal to the /system_manager/execute_plan action.\"];\n  }\n  if (sm.state === SM_OPERATING) {\n    if (mc !== undefined && mc.state === MC_OPERATING && mc.message !== \"\") {\n      return [\n        \"control_lost\",\n        `The MC reports \"${mc.message}\". The print continues or fails. To get control back: /system_manager/request_arm, then GRANT.`,\n      ];\n    }\n    switch (mission?.state) {\n      case LOP_ALIGNING:\n        return [\"none\", \"No action. The lift goes to the alignment height, then the robot drives to the layer start.\"];\n      case LOP_READY_TO_START:\n        return [\"green_light\", \"Check the robot at the layer start. Then give the green light: /system_manager/start_layer.\"];\n      case LOP_PRINTING:\n        return [\"none\", \"No action. The lift goes to the print height, then the robot prints the layer.\"];\n      case LOP_WAITING_TO_RETURN:\n        return [\"cut_done\", \"Cut the wall end. Then confirm: /system_manager/cut_done.\"];\n      case LOP_RETURNING:\n        return [\"none\", \"No action. The robot drives the return segment.\"];\n      default:\n        return [\"wait\", \"Wait for the MC mission state.\"];\n    }\n  }\n  return [\"wait\", `Unknown SM state ${sm.state}.`];\n}\n\nfunction actCode(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return \"\";\n  }\n  if (!status.rc_present) {\n    return \"rc_lost\";\n  }\n  return status.armed ? \"armed\" : \"disarmed\";\n}\n\nexport default function script(event: Event): Output {\n  switch (event.topic) {\n    case \"/system_manager/state\":\n      sm = event.message;\n      break;\n    case \"/mission_controller/state\":\n      mc = event.message;\n      break;\n    case \"/mission_controller/mission_state\":\n      mission = event.message;\n      break;\n    case \"/act/status\":\n      act = event.message;\n      break;\n  }\n\n  const [code, text] = operatorAction();\n\n  let layerText = \"-\";\n  if (mission !== undefined && mission.total_layers > 0) {\n    layerText = `${mission.current_layer} / ${mission.total_layers}`;\n  }\n  let plan = NO_DATA;\n  if (sm !== undefined) {\n    plan = sm.current_plan_id !== \"\" ? sm.current_plan_id : \"(none)\";\n  }\n\n  return {\n    why: {\n      do_now: text,\n      sm_reason: reason(sm?.message),\n      mc_reason: reason(mc?.message),\n      plan,\n      last_change: lastChange(act),\n    },\n    codes: {\n      operator_wait: code,\n      act_code: actCode(act),\n      layer_text: layerText,\n    },\n  };\n}\n"
     },
     "b6f1c2a0-0002-4d6e-9a51-print0mission": {
       "name": "phcu_commands",
-      "sourceCode": "// PHCU commands for the print_mission layout.\n//\n// /phcu/diagnostics holds the commanded vibe (run, setpoint) as text key-values. This script\n// turns them into fields that the Plot and State Transitions panels can show.\n//\n// Source: scripts/phcu_commands.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\"/phcu/diagnostics\"];\nexport const output = \"/studio_script/phcu_commands\";\n\ntype Output = {\n  vibe_run: boolean; // the PHCU node runs the vibe (latched /act/vibe/driver/run)\n  vibe_hz_setpoint: number; // the frequency that the PHCU node sends (Hz)\n};\n\nfunction value(event: Input<\"/phcu/diagnostics\">, key: string): string | undefined {\n  for (const kv of event.message.values) {\n    if (kv.key === key) {\n      return kv.value;\n    }\n  }\n  return undefined;\n}\n\nexport default function script(event: Input<\"/phcu/diagnostics\">): Output | undefined {\n  const run = value(event, \"vibe_run\");\n  const hz = value(event, \"vibe_hz_setpoint\");\n  if (run === undefined || hz === undefined) {\n    return undefined;\n  }\n  return {\n    vibe_run: run === \"true\",\n    vibe_hz_setpoint: Number(hz),\n  };\n}\n"
+      "sourceCode": "// PHCU commands for the print_mission layout.\n//\n// /phcu/diagnostics holds the commanded vibe (run, setpoint) as text key-values. This script\n// turns them into numbers for the \"Vibe frequency\" plot:\n//\n//   vibe_hz_setpoint   the frequency that the PHCU node sends (Hz), also when the vibe stops\n//   vibe_hz_command    the setpoint while the vibe runs, else 0: the commanded frequency, to\n//                      compare with the actual frequency (/act/vibe/state hz_actual)\n//\n// Source: scripts/phcu_commands.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\"/phcu/diagnostics\"];\nexport const output = \"/studio_script/phcu_commands\";\n\ntype Output = {\n  vibe_hz_setpoint: number;\n  vibe_hz_command: number;\n};\n\nfunction value(event: Input<\"/phcu/diagnostics\">, key: string): string | undefined {\n  for (const kv of event.message.values) {\n    if (kv.key === key) {\n      return kv.value;\n    }\n  }\n  return undefined;\n}\n\nexport default function script(event: Input<\"/phcu/diagnostics\">): Output | undefined {\n  const run = value(event, \"vibe_run\");\n  const hz = value(event, \"vibe_hz_setpoint\");\n  if (run === undefined || hz === undefined) {\n    return undefined;\n  }\n  const setpoint = Number(hz);\n  return {\n    vibe_hz_setpoint: setpoint,\n    vibe_hz_command: run === \"true\" ? setpoint : 0,\n  };\n}\n"
     },
     "b6f1c2a0-0003-4d6e-9a51-print0mission": {
       "name": "lookahead_marker",
-      "sourceCode": "// Nav2 lookahead point for the print_mission layout.\n//\n// The 3D panel does not draw geometry_msgs/PointStamped. This script draws the Regulated\n// Pure Pursuit lookahead point (/lookahead_point, in base_link) as a sphere with a label.\n// The sphere goes away 1 s after the last point, so it shows only while a segment runs.\n//\n// Source: scripts/lookahead_marker.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/lookahead_point\"];\nexport const output = \"/studio_script/lookahead_marker\";\n\nexport default function script(event: Input<\"/lookahead_point\">): SceneUpdate {\n  const p = event.message.point;\n  const pose = { position: { x: p.x, y: p.y, z: p.z }, orientation: { x: 0, y: 0, z: 0, w: 1 } };\n  const color = { r: 1.0, g: 0.6, b: 0.0, a: 1.0 };\n  return {\n    deletions: [],\n    entities: [\n      {\n        timestamp: event.receiveTime,\n        frame_id: event.message.header.frame_id,\n        id: \"lookahead\",\n        lifetime: { sec: 1, nsec: 0 },\n        frame_locked: true,\n        metadata: [],\n        arrows: [],\n        cubes: [],\n        spheres: [{ pose, size: { x: 0.08, y: 0.08, z: 0.08 }, color }],\n        cylinders: [],\n        lines: [],\n        triangles: [],\n        texts: [\n          {\n            pose: { position: { x: p.x, y: p.y, z: p.z + 0.15 }, orientation: pose.orientation },\n            billboard: true,\n            font_size: 14,\n            scale_invariant: true,\n            color,\n            text: \"lookahead\",\n          },\n        ],\n        models: [],\n      },\n    ],\n  };\n}\n"
+      "sourceCode": "// Nav2 lookahead point for the print_mission layout.\n//\n// The 3D panel does not draw geometry_msgs/PointStamped. This script draws the Regulated\n// Pure Pursuit lookahead point (/lookahead_point, in base_link) as an orange dot: the point on\n// the segment that Nav2 steers to. The dot is 0.3 m higher than the point, so that it is\n// above the plan lines and the robot in the top-down view. It goes away 1 s after the last\n// point, so it shows only while a segment runs.\n//\n// Source: scripts/lookahead_marker.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/lookahead_point\"];\nexport const output = \"/studio_script/lookahead_marker\";\n\nexport default function script(event: Input<\"/lookahead_point\">): SceneUpdate {\n  const p = event.message.point;\n  const pose = { position: { x: p.x, y: p.y, z: p.z + 0.3 }, orientation: { x: 0, y: 0, z: 0, w: 1 } };\n  const color = { r: 1.0, g: 0.6, b: 0.0, a: 1.0 };\n  return {\n    deletions: [],\n    entities: [\n      {\n        timestamp: event.receiveTime,\n        frame_id: event.message.header.frame_id,\n        id: \"lookahead\",\n        lifetime: { sec: 1, nsec: 0 },\n        frame_locked: true,\n        metadata: [],\n        arrows: [],\n        cubes: [],\n        spheres: [{ pose, size: { x: 0.12, y: 0.12, z: 0.12 }, color }],\n        cylinders: [],\n        lines: [],\n        triangles: [],\n        texts: [],\n        models: [],\n      },\n    ],\n  };\n}\n"
     },
     "b6f1c2a0-0004-4d6e-9a51-print0mission": {
-      "name": "odom_trail",
-      "sourceCode": "// Odometry trail for the print_mission layout.\n//\n// The 3D panel does not draw nav_msgs/Odometry. This script keeps the positions of\n// /odometry/local (the local EKF, frame odom) and draws them as one line: the path that the\n// robot drove. It adds a point when the robot moved 2 cm or more, and keeps the last 5000.\n//\n// Source: scripts/odom_trail.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/odometry/local\"];\nexport const output = \"/studio_script/odom_trail\";\n\nconst MIN_STEP_M = 0.02;\nconst MAX_POINTS = 5000;\n\ntype Point = { x: number; y: number; z: number };\nconst trail: Point[] = [];\n\nexport default function script(event: Input<\"/odometry/local\">): SceneUpdate | undefined {\n  const p = event.message.pose.pose.position;\n  const last = trail[trail.length - 1];\n  if (last !== undefined && Math.hypot(p.x - last.x, p.y - last.y) < MIN_STEP_M) {\n    return undefined;\n  }\n  trail.push({ x: p.x, y: p.y, z: 0.01 });\n  if (trail.length > MAX_POINTS) {\n    trail.shift();\n  }\n  if (trail.length < 2) {\n    return undefined;\n  }\n  return {\n    deletions: [],\n    entities: [\n      {\n        timestamp: event.receiveTime,\n        frame_id: event.message.header.frame_id,\n        id: \"odom_trail\",\n        lifetime: { sec: 0, nsec: 0 },\n        frame_locked: true,\n        metadata: [],\n        arrows: [],\n        cubes: [],\n        spheres: [],\n        cylinders: [],\n        lines: [\n          {\n            type: 0, // LINE_STRIP\n            pose: { position: { x: 0, y: 0, z: 0 }, orientation: { x: 0, y: 0, z: 0, w: 1 } },\n            thickness: 3,\n            scale_invariant: true,\n            points: trail.slice(),\n            color: { r: 0.2, g: 0.6, b: 1.0, a: 1.0 },\n            colors: [],\n            indices: [],\n          },\n        ],\n        triangles: [],\n        texts: [],\n        models: [],\n      },\n    ],\n  };\n}\n"
+      "name": "mission_plan",
+      "sourceCode": "// Print plan in the map, for the print_mission layout.\n//\n// Reads the plan that the System Manager holds (/system_manager/loaded_plan, latched) and the\n// mission state of the Mission Controller. Draws each segment of each layer as one line in the\n// frame of the plan (map or odom):\n//\n//   colour    the segment type: approach (alignment) blue, print green, return purple\n//   width     the segment status: the running segment is the widest, the next segment (the MC\n//             waits for the operator) is wide, the other segments are thin\n//   opacity   done and skipped segments are faint, the segments to do are clear\n//\n// The layers of a wall have the same path in the plane, so their lines overlap in the top-down\n// view. The current layer is on top, with a label on each of its segments. Before a print, the\n// labels are on the start layer. An empty plan (no plan loaded) removes all lines.\n//\n// Source: scripts/mission_plan.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneEntity, SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/system_manager/loaded_plan\", \"/mission_controller/mission_state\"];\nexport const output = \"/studio_script/mission_plan\";\n\ntype Event = Input<\"/system_manager/loaded_plan\"> | Input<\"/mission_controller/mission_state\">;\ntype Plan = Input<\"/system_manager/loaded_plan\">[\"message\"];\ntype Segment = Plan[\"layers\"][number][\"print_segment\"];\ntype MissionState = Input<\"/mission_controller/mission_state\">[\"message\"];\ntype Time = Input<\"/system_manager/loaded_plan\">[\"receiveTime\"];\ntype Rgb = { r: number; g: number; b: number };\ntype Status = \"skipped\" | \"done\" | \"todo\" | \"next\" | \"running\";\n\n// Constants of cpr_interfaces/msg/MissionState.\nconst LOP_NONE = 0;\nconst LOP_ALIGNING = 1;\nconst LOP_READY_TO_START = 2;\nconst LOP_PRINTING = 3;\nconst LOP_WAITING_TO_RETURN = 4;\nconst LOP_RETURNING = 5;\n\nconst SEGMENTS: { field: \"alignment_segment\" | \"print_segment\" | \"return_segment\"; label: string; rgb: Rgb }[] = [\n  { field: \"alignment_segment\", label: \"approach\", rgb: { r: 0.38, g: 0.65, b: 0.98 } },\n  { field: \"print_segment\", label: \"print\", rgb: { r: 0.29, g: 0.87, b: 0.5 } },\n  { field: \"return_segment\", label: \"return\", rgb: { r: 0.75, g: 0.52, b: 0.99 } },\n];\n\n// Line width (pixels), opacity, and height (m) for each status. The height only puts the\n// important lines on top in the top-down view.\nconst STYLE: Record<Status, { width: number; alpha: number; z: number }> = {\n  skipped: { width: 1.5, alpha: 0.15, z: 0.0 },\n  done: { width: 2, alpha: 0.3, z: 0.01 },\n  todo: { width: 2.5, alpha: 0.75, z: 0.02 },\n  next: { width: 5, alpha: 1.0, z: 0.03 },\n  running: { width: 8, alpha: 1.0, z: 0.04 },\n};\nconst WHITE = { r: 1, g: 1, b: 1, a: 0.95 };\nconst IDENTITY = { x: 0, y: 0, z: 0, w: 1 };\n\nlet plan: Plan | undefined;\nlet mission: MissionState | undefined;\n\n// [index of the current segment in the plan (layer 1 approach = 0), the MC drives it now].\n// undefined: no print runs.\nfunction current(m: MissionState | undefined): [number, boolean] | undefined {\n  if (m === undefined || m.state === LOP_NONE || m.current_layer < 1) {\n    return undefined;\n  }\n  const base = (m.current_layer - 1) * 3;\n  switch (m.state) {\n    case LOP_ALIGNING:\n      return [base, true];\n    case LOP_READY_TO_START:\n      return [base + 1, false]; // the print segment is next: the MC waits for the green light\n    case LOP_PRINTING:\n      return [base + 1, true];\n    case LOP_WAITING_TO_RETURN:\n      return [base + 2, false]; // the return segment is next: the MC waits for cut done\n    case LOP_RETURNING:\n      return [base + 2, true];\n    default:\n      return undefined;\n  }\n}\n\nfunction status(pl: Plan, layer: number, index: number, now: [number, boolean] | undefined): Status {\n  if (layer < pl.start_layer) {\n    return \"skipped\";\n  }\n  if (now === undefined) {\n    return \"todo\";\n  }\n  const [cur, running] = now;\n  if (index < cur) {\n    return \"done\";\n  }\n  if (index === cur) {\n    return running ? \"running\" : \"next\";\n  }\n  return \"todo\";\n}\n\nfunction entity(time: Time, frameId: string, id: string): SceneEntity {\n  return {\n    timestamp: time,\n    frame_id: frameId,\n    id,\n    lifetime: { sec: 0, nsec: 0 },\n    frame_locked: true,\n    metadata: [],\n    arrows: [],\n    cubes: [],\n    spheres: [],\n    cylinders: [],\n    lines: [],\n    triangles: [],\n    texts: [],\n    models: [],\n  };\n}\n\nfunction frameOf(segment: Segment): string {\n  return segment.waypoints[0]?.header.frame_id ?? \"map\";\n}\n\nexport default function script(event: Event): SceneUpdate {\n  if (event.topic === \"/system_manager/loaded_plan\") {\n    plan = event.message;\n  } else {\n    mission = event.message;\n  }\n  const time = event.receiveTime;\n  const update: SceneUpdate = {\n    deletions: [{ timestamp: time, type: 1, id: \"\" }], // ALL: the update replaces the drawing\n    entities: [],\n  };\n  const p = plan;\n  if (p === undefined || p.plan_uuid === \"\" || p.layers.length === 0) {\n    return update;\n  }\n\n  const now = current(mission);\n  // The layer with the labels: the current layer, else the start layer.\n  const focus = now !== undefined ? Math.floor(now[0] / 3) + 1 : Math.max(p.start_layer, 1);\n  let minX = Infinity;\n  let maxY = -Infinity;\n\n  p.layers.forEach((layer, i) => {\n    const layerNumber = i + 1;\n    SEGMENTS.forEach((kind, k) => {\n      const segment = layer[kind.field];\n      if (segment.waypoints.length < 2) {\n        return;\n      }\n      const s = status(p, layerNumber, i * 3 + k, now);\n      const style = STYLE[s];\n      // The focus layer above the other layers that have the same status.\n      const z = style.z + (layerNumber === focus ? 0.005 : 0);\n      const e = entity(time, frameOf(segment), `layer${layerNumber}_${kind.label}`);\n      e.lines.push({\n        type: 0, // LINE_STRIP\n        pose: { position: { x: 0, y: 0, z: 0 }, orientation: IDENTITY },\n        thickness: style.width,\n        scale_invariant: true,\n        points: segment.waypoints.map((w) => ({ x: w.pose.position.x, y: w.pose.position.y, z })),\n        color: { ...kind.rgb, a: style.alpha },\n        colors: [],\n        indices: [],\n      });\n      for (const w of segment.waypoints) {\n        minX = Math.min(minX, w.pose.position.x);\n        maxY = Math.max(maxY, w.pose.position.y);\n      }\n      if (layerNumber === focus) {\n        const mid = segment.waypoints[Math.floor(segment.waypoints.length / 2)]!.pose.position;\n        const mark = s === \"running\" ? \" (now)\" : s === \"next\" ? \" (next)\" : \"\";\n        e.texts.push({\n          pose: { position: { x: mid.x, y: mid.y, z: 0.1 }, orientation: IDENTITY },\n          billboard: true,\n          font_size: 13,\n          scale_invariant: true,\n          color: { ...kind.rgb, a: 1.0 },\n          text: `L${layerNumber} ${kind.label}${mark}`,\n        });\n      }\n      update.entities.push(e);\n    });\n  });\n\n  // Plan name and layer count, above the top left corner of the plan.\n  const first = p.layers[0]!.alignment_segment;\n  const title = entity(time, frameOf(first), \"plan_title\");\n  title.texts.push({\n    pose: { position: { x: minX, y: maxY + 0.4, z: 0.1 }, orientation: IDENTITY },\n    billboard: true,\n    font_size: 14,\n    scale_invariant: true,\n    color: WHITE,\n    text: `${p.plan_name || p.plan_uuid}: ${p.layers.length} layers, start layer ${p.start_layer}`,\n  });\n  update.entities.push(title);\n  return update;\n}\n"
     },
     "b6f1c2a0-0005-4d6e-9a51-print0mission": {
+      "name": "robot_pose",
+      "sourceCode": "// Robot pose and driven trail in the map, for the print_mission layout.\n//\n// Robot: a triangle in base_link that points forward (+x). The entity is \"frame locked\" in\n// base_link, so the 3D panel puts it at the latest TF pose of base_link in the map. The panel\n// reads the TF itself.\n//\n// Trail: the path that the robot drove, in map. The script composes the two TF links\n// map -> odom and odom -> base_link of /tf and /tf_static:\n//\n//   robot    map -> odom comes from ekf_global (GPS) on /tf and moves; odom -> base_link\n//            comes from ekf_local on /tf\n//   mock     map -> odom is a static identity on /tf_static; odom -> base_link comes from\n//            ekf_local on /tf\n//\n// Thus the trail shows the map pose, also when the GPS corrects map -> odom. A /odometry/local\n// trail would show the odom pose only. The script adds a point when the robot moved 2 cm or\n// more, and keeps the last 5000 points. A new plan on /system_manager/loaded_plan starts a new\n// trail.\n//\n// Source: scripts/robot_pose.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneEntity, SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/tf\", \"/tf_static\", \"/system_manager/loaded_plan\"];\nexport const output = \"/studio_script/robot_pose\";\n\ntype Event = Input<\"/tf\"> | Input<\"/tf_static\"> | Input<\"/system_manager/loaded_plan\">;\ntype Time = Input<\"/tf\">[\"receiveTime\"];\ntype Vec = { x: number; y: number; z: number };\ntype Quat = { x: number; y: number; z: number; w: number };\ntype Pose = { t: Vec; q: Quat };\n\nconst MAP = \"map\";\nconst ODOM = \"odom\";\nconst BASE = \"base_link\";\nconst MIN_STEP_M = 0.02;\nconst MAX_POINTS = 5000;\n// Send the robot entity again after this time, also when the robot does not move: a panel\n// that opens later (for example after a tab change) then shows it.\nconst RESEND_S = 1.0;\n// Triangle: 0.9 m long, 0.6 m wide, base_link at 1/3 of the length from the back.\nconst NOSE_M = 0.6;\nconst TAIL_M = 0.3;\nconst HALF_WIDTH_M = 0.3;\nconst ROBOT_COLOR = { r: 0.98, g: 0.8, b: 0.08, a: 0.9 };\nconst TRAIL_COLOR = { r: 0.95, g: 0.95, b: 0.95, a: 0.8 };\nconst IDENTITY = { x: 0, y: 0, z: 0, w: 1 };\n\nlet mapOdom: Pose | undefined;\nlet odomBase: Pose | undefined;\nlet planUuid = \"\";\nconst trail: Vec[] = [];\nlet lastSent = -Infinity;\n\nfunction seconds(t: Time): number {\n  return t.sec + t.nsec * 1e-9;\n}\n\nfunction frame(id: string): string {\n  return id.startsWith(\"/\") ? id.slice(1) : id;\n}\n\nfunction multiply(a: Quat, b: Quat): Quat {\n  return {\n    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,\n    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,\n    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,\n    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,\n  };\n}\n\nfunction rotate(q: Quat, v: Vec): Vec {\n  // v' = q v q*\n  const p = multiply(multiply(q, { x: v.x, y: v.y, z: v.z, w: 0 }), { x: -q.x, y: -q.y, z: -q.z, w: q.w });\n  return { x: p.x, y: p.y, z: p.z };\n}\n\n// a then b: the pose of b's child in a's parent frame.\nfunction compose(a: Pose, b: Pose): Pose {\n  const r = rotate(a.q, b.t);\n  return { t: { x: a.t.x + r.x, y: a.t.y + r.y, z: a.t.z + r.z }, q: multiply(a.q, b.q) };\n}\n\nfunction readTransforms(message: Input<\"/tf\">[\"message\"]): void {\n  for (const tf of message.transforms) {\n    const parent = frame(tf.header.frame_id);\n    const child = frame(tf.child_frame_id);\n    const pose = { t: tf.transform.translation, q: tf.transform.rotation };\n    if (parent === MAP && child === ODOM) {\n      mapOdom = pose;\n    } else if (parent === ODOM && child === BASE) {\n      odomBase = pose;\n    }\n  }\n}\n\nfunction emptyEntity(time: Time, frameId: string, id: string): SceneEntity {\n  return {\n    timestamp: time,\n    frame_id: frameId,\n    id,\n    lifetime: { sec: 0, nsec: 0 },\n    frame_locked: true,\n    metadata: [],\n    arrows: [],\n    cubes: [],\n    spheres: [],\n    cylinders: [],\n    lines: [],\n    triangles: [],\n    texts: [],\n    models: [],\n  };\n}\n\nfunction robotEntity(time: Time): SceneEntity {\n  const e = emptyEntity(time, BASE, \"robot\");\n  const z = 0.2; // above the plan lines and the trail\n  const outline = [\n    { x: NOSE_M, y: 0, z },\n    { x: -TAIL_M, y: HALF_WIDTH_M, z },\n    { x: -TAIL_M, y: -HALF_WIDTH_M, z },\n  ];\n  e.triangles.push({\n    pose: { position: { x: 0, y: 0, z: 0 }, orientation: IDENTITY },\n    points: outline,\n    color: ROBOT_COLOR,\n    colors: [],\n    indices: [],\n  });\n  e.lines.push({\n    type: 1, // LINE_LOOP\n    pose: { position: { x: 0, y: 0, z: 0.01 }, orientation: IDENTITY },\n    thickness: 2,\n    scale_invariant: true,\n    points: outline,\n    color: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 },\n    colors: [],\n    indices: [],\n  });\n  return e;\n}\n\nfunction trailEntity(time: Time): SceneEntity {\n  const e = emptyEntity(time, MAP, \"trail\");\n  if (trail.length >= 2) {\n    e.lines.push({\n      type: 0, // LINE_STRIP\n      pose: { position: { x: 0, y: 0, z: 0 }, orientation: IDENTITY },\n      thickness: 2,\n      scale_invariant: true,\n      points: trail.slice(),\n      color: TRAIL_COLOR,\n      colors: [],\n      indices: [],\n    });\n  }\n  return e;\n}\n\n// true when the trail got a new point.\nfunction addTrailPoint(): boolean {\n  if (mapOdom === undefined || odomBase === undefined) {\n    return false;\n  }\n  const p = compose(mapOdom, odomBase).t;\n  const last = trail[trail.length - 1];\n  if (last !== undefined && Math.hypot(p.x - last.x, p.y - last.y) < MIN_STEP_M) {\n    return false;\n  }\n  trail.push({ x: p.x, y: p.y, z: 0.05 });\n  if (trail.length > MAX_POINTS) {\n    trail.shift();\n  }\n  return true;\n}\n\nexport default function script(event: Event): SceneUpdate | undefined {\n  let changed = false;\n  switch (event.topic) {\n    case \"/tf\":\n    case \"/tf_static\":\n      readTransforms(event.message);\n      changed = addTrailPoint();\n      break;\n    case \"/system_manager/loaded_plan\":\n      if (event.message.plan_uuid !== \"\" && event.message.plan_uuid !== planUuid) {\n        trail.length = 0;\n        changed = true;\n      }\n      planUuid = event.message.plan_uuid;\n      break;\n  }\n  const now = seconds(event.receiveTime);\n  if (!changed && now - lastSent < RESEND_S) {\n    return undefined;\n  }\n  lastSent = now;\n  return {\n    deletions: [],\n    entities: [robotEntity(event.receiveTime), trailEntity(event.receiveTime)],\n  };\n}\n"
+    },
+    "b6f1c2a0-0006-4d6e-9a51-print0mission": {
       "name": "actuator_status",
       "sourceCode": "// Actuator status table for the print_mission layout.\n//\n// One row for each actuator (drive, lift, vibe, gate) and one row for the PHCU board. The\n// columns tell who holds the actuator, its health, if it is ready, and what it does now.\n// The Table panel \"Actuators: holder, health, ready, state\" shows the rows.\n//\n// The Mission Controller refuses the green light when a health message is older than\n// health_timeout_s (1.0 s), not OK, or not ready. The health column shows the age when the\n// message is older than HEALTH_OLD_S.\n//\n// Source: scripts/actuator_status.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/act/status\",\n  \"/act/drive/health\",\n  \"/act/lift/health\",\n  \"/act/vibe/health\",\n  \"/act/gate/health\",\n  \"/act/drive/state\",\n  \"/phcu/diagnostics\",\n];\nexport const output = \"/studio_script/actuator_status\";\n\ntype Row = {\n  actuator: string;\n  holder: string; // client that holds the actuator, and the client that waits for GRANT\n  health: string; // OK, OUTAGE or FAULT, with the age when old\n  ready: string; // false = needs operator setup (for example, lift not homed)\n  state: string; // what the actuator does now\n};\n\ntype Output = {\n  rows: Row[];\n};\n\ntype Event =\n  | Input<\"/act/status\">\n  | Input<\"/act/drive/health\">\n  | Input<\"/act/lift/health\">\n  | Input<\"/act/vibe/health\">\n  | Input<\"/act/gate/health\">\n  | Input<\"/act/drive/state\">\n  | Input<\"/phcu/diagnostics\">;\n\ntype ActStatus = Input<\"/act/status\">[\"message\"];\ntype ActuatorStatus = ActStatus[\"drive\"];\ntype Health = Input<\"/act/drive/health\">[\"message\"];\ntype DriveState = Input<\"/act/drive/state\">[\"message\"];\ntype Diagnostics = Input<\"/phcu/diagnostics\">[\"message\"];\ntype Time = Input<\"/act/status\">[\"receiveTime\"];\n\n// Constants of etk_actuation_interfaces/msg/ActuatorHealth.\nconst HEALTH_NAMES = [\"OK\", \"OUTAGE\", \"FAULT\"];\n// The Mission Controller parameter health_timeout_s.\nconst HEALTH_OLD_S = 1.0;\nconst NO_DATA = \"(no data)\";\n\ntype Received<T> = { message: T; time: Time };\n\n// The last message of each input. The script runs once for each input message.\nlet act: ActStatus | undefined;\nlet drive: DriveState | undefined;\nlet diagnostics: Diagnostics | undefined;\nconst health: Record<string, Received<Health> | undefined> = {};\n\nfunction seconds(t: Time): number {\n  return t.sec + t.nsec * 1e-9;\n}\n\nfunction levelName(level: number): string {\n  switch (level) {\n    case 255:\n      return \"RC\";\n    case 100:\n      return \"UI\";\n    case 50:\n      return \"MC\";\n    default:\n      return `level ${level}`;\n  }\n}\n\nfunction holder(status: ActuatorStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  const who = status.level === 255 ? \"RC (no client)\" : `${levelName(status.level)} (${status.level})`;\n  if (status.requested_level > 0) {\n    return `${who}; ${levelName(status.requested_level)} waits for GRANT`;\n  }\n  return who;\n}\n\nfunction healthText(actuator: string, now: Time): string {\n  const h = health[actuator];\n  if (h === undefined) {\n    return NO_DATA;\n  }\n  const text = HEALTH_NAMES[h.message.health] ?? `UNKNOWN (${h.message.health})`;\n  const age = seconds(now) - seconds(h.time);\n  return age > HEALTH_OLD_S ? `${text}, OLD (${age.toFixed(1)} s)` : text;\n}\n\nfunction readyText(actuator: string): string {\n  const h = health[actuator];\n  if (h === undefined) {\n    return NO_DATA;\n  }\n  return h.message.ready ? \"yes\" : \"NO (setup)\";\n}\n\nfunction diag(key: string): string {\n  if (diagnostics === undefined) {\n    return \"?\";\n  }\n  for (const kv of diagnostics.values) {\n    if (kv.key === key) {\n      return kv.value;\n    }\n  }\n  return \"?\";\n}\n\nfunction stale(validKey: string): string {\n  return diag(validKey) === \"false\" ? \", telemetry OLD\" : \"\";\n}\n\nfunction driveState(): string {\n  if (drive === undefined) {\n    return NO_DATA;\n  }\n  return drive.energized ? \"energized\" : \"NOT energized\";\n}\n\nfunction liftState(): string {\n  if (diagnostics === undefined) {\n    return NO_DATA;\n  }\n  return (\n    `${diag(\"lift_motion\")}, ${diag(\"lift_position_mm\")} mm -> ${diag(\"lift_target_mm\")} mm, ` +\n    `${diag(\"lift_cal\")}${stale(\"lift_valid\")}`\n  );\n}\n\nfunction vibeState(): string {\n  if (diagnostics === undefined) {\n    return NO_DATA;\n  }\n  const run = diag(\"vibe_run\") === \"true\" ? \"run\" : \"stop\";\n  const fault = diag(\"vfd_fault\") === \"true\" ? \", VFD FAULT\" : \"\";\n  return (\n    `${diag(\"vibe_state\")}, ${run}, ${diag(\"vibe_hz_actual\")} Hz (setpoint ${diag(\"vibe_hz_setpoint\")})` +\n    `${fault}${stale(\"vibe_valid\")}`\n  );\n}\n\nfunction gateState(): string {\n  if (diagnostics === undefined) {\n    return NO_DATA;\n  }\n  return `${diag(\"gate_state\")}${stale(\"gate_valid\")}`;\n}\n\nfunction phcuRow(): Row {\n  if (diagnostics === undefined) {\n    return { actuator: \"PHCU board\", holder: \"-\", health: NO_DATA, ready: \"-\", state: NO_DATA };\n  }\n  const link = diag(\"link_up\") === \"true\" ? \"link up\" : \"link DOWN\";\n  const armed = diag(\"armed\") === \"true\" ? \"gets armed\" : \"NOT armed\";\n  const faults = diag(\"faults\");\n  return {\n    actuator: \"PHCU board\",\n    holder: \"-\",\n    health: faults === \"0x0000\" ? diag(\"phcu_state\") : `${diag(\"phcu_state\")}, faults ${faults}`,\n    ready: link,\n    state: `${armed}; ${diagnostics.message}`,\n  };\n}\n\nexport default function script(event: Event): Output {\n  switch (event.topic) {\n    case \"/act/status\":\n      act = event.message;\n      break;\n    case \"/act/drive/health\":\n      health.drive = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/lift/health\":\n      health.lift = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/vibe/health\":\n      health.vibe = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/gate/health\":\n      health.gate = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/drive/state\":\n      drive = event.message;\n      break;\n    case \"/phcu/diagnostics\":\n      diagnostics = event.message;\n      break;\n  }\n\n  const now = event.receiveTime;\n  const row = (actuator: string, status: ActuatorStatus | undefined, state: string): Row => ({\n    actuator,\n    holder: holder(status),\n    health: healthText(actuator, now),\n    ready: readyText(actuator),\n    state,\n  });\n\n  return {\n    rows: [\n      row(\"drive\", act?.drive, driveState()),\n      row(\"lift\", act?.lift, liftState()),\n      row(\"vibe\", act?.vibe, vibeState()),\n      row(\"gate\", act?.gate, gateState()),\n      phcuRow(),\n    ],\n  };\n}\n"
     }

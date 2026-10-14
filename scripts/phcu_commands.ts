@@ -1,7 +1,11 @@
 // PHCU commands for the print_mission layout.
 //
 // /phcu/diagnostics holds the commanded vibe (run, setpoint) as text key-values. This script
-// turns them into fields that the Plot and State Transitions panels can show.
+// turns them into numbers for the "Vibe frequency" plot:
+//
+//   vibe_hz_setpoint   the frequency that the PHCU node sends (Hz), also when the vibe stops
+//   vibe_hz_command    the setpoint while the vibe runs, else 0: the commanded frequency, to
+//                      compare with the actual frequency (/act/vibe/state hz_actual)
 //
 // Source: scripts/phcu_commands.ts. make_layout.py copies this file into
 // print_mission.layout.json.
@@ -11,8 +15,8 @@ export const inputs = ["/phcu/diagnostics"];
 export const output = "/studio_script/phcu_commands";
 
 type Output = {
-  vibe_run: boolean; // the PHCU node runs the vibe (latched /act/vibe/driver/run)
-  vibe_hz_setpoint: number; // the frequency that the PHCU node sends (Hz)
+  vibe_hz_setpoint: number;
+  vibe_hz_command: number;
 };
 
 function value(event: Input<"/phcu/diagnostics">, key: string): string | undefined {
@@ -30,8 +34,9 @@ export default function script(event: Input<"/phcu/diagnostics">): Output | unde
   if (run === undefined || hz === undefined) {
     return undefined;
   }
+  const setpoint = Number(hz);
   return {
-    vibe_run: run === "true",
-    vibe_hz_setpoint: Number(hz),
+    vibe_hz_setpoint: setpoint,
+    vibe_hz_command: run === "true" ? setpoint : 0,
   };
 }

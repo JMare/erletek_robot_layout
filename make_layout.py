@@ -11,8 +11,10 @@ All paths are relative to this file. The output is a layout file for "Import fro
 the Foxglove app. See README.md.
 
 Screen target: about 1400 x 820 points of panel area (MacBook Air 13.6", 1470 x 956 points).
-Thus: one band row, at most 4 panels for each tab (the operator tab has 5 buttons and one
-warning), at most 2 plots for each tab.
+Thus: one band row and at most 4 large panels for each tab.
+
+The layout only reads topics. It has no panel that calls a service or publishes: a viewer
+must not move the robot.
 """
 
 import json
@@ -27,8 +29,6 @@ BLUE = '#2563eb'
 GREEN = '#16a34a'
 AMBER = '#d97706'
 RED = '#dc2626'
-PURPLE = '#7c3aed'
-TEAL = '#0891b2'
 
 config_by_id = {}
 
@@ -78,10 +78,15 @@ def indicator(name, title, path, rules, fallback_label='no data', fallback_color
     })
 
 
-def series(value, label, color=None):
+def series(value, label, color=None, line=True, width=None):
+    """A plot series. line=False: points only (for a topic that publishes once per change)."""
     item = {'value': value, 'enabled': True, 'timestampMethod': 'receiveTime', 'label': label}
     if color is not None:
         item['color'] = color
+    if not line:
+        item['showLine'] = False
+    if width is not None:
+        item['lineSize'] = width
     return item
 
 
@@ -103,10 +108,6 @@ def plot(name, title, paths, min_y=None, max_y=None, window_s=180):
     if max_y is not None:
         config['maxYValue'] = max_y
     return panel('Plot', name, title, config)
-
-
-def transitions(name, title, paths):
-    return panel('StateTransitions', name, title, {'paths': paths, 'isSynced': True, 'showPoints': True})
 
 
 def raw(name, title, topic_path, font_size=13):
@@ -134,23 +135,16 @@ def log(name, title, min_level, hidden_names=()):
     })
 
 
-def call_service(name, title, service, button, tooltip, color, payload='{}'):
-    return panel('CallService', name, title, {
-        'serviceName': service,
-        'requestPayload': payload,
-        'layout': 'vertical',
-        'buttonText': button,
-        'buttonTooltip': tooltip,
-        'buttonColor': color,
-    })
-
-
 SUMMARY = '/studio_script/mission_summary'
 ACTUATORS = '/studio_script/actuator_status'
 PHCU = '/studio_script/phcu_commands'
+MISSION_PLAN = '/studio_script/mission_plan'
+ROBOT_POSE = '/studio_script/robot_pose'
+LOOKAHEAD = '/studio_script/lookahead_marker'
 
 # ---------------------------------------------------------------------------------------------
-# Band: one row, always visible. Where are we, and what must the operator do now.
+# Band: one row, always visible. The only place for the states: where are we, and what must
+# the operator do now. The tabs do not show these states again.
 
 SM_RULES = [
     rule(0, 'SM IDLE', GREY),
@@ -197,91 +191,58 @@ band = row([
     indicator('sm_state', 'SM state', '/system_manager/state.state', SM_RULES),
     indicator('mc_state', 'MC state', '/mission_controller/state.state', MC_RULES),
     indicator('lop', 'Layer phase (LOP)', '/mission_controller/mission_state.state', LOP_RULES),
-    raw('layer', 'Layer', f'{SUMMARY}.layer_text'),
-    indicator('act', '/act gate', f'{SUMMARY}.act_code', ACT_RULES),
-    indicator('operator', 'Operator: do now', f'{SUMMARY}.operator_wait', OPERATOR_RULES),
+    raw('layer', 'Layer', f'{SUMMARY}.codes.layer_text'),
+    indicator('act', '/act gate', f'{SUMMARY}.codes.act_code', ACT_RULES),
+    indicator('operator', 'Operator: do now', f'{SUMMARY}.codes.operator_wait', OPERATOR_RULES),
 ], [13, 15, 18, 8, 12, 34])
 
 # ---------------------------------------------------------------------------------------------
-# Tab 1: mission. Where are we, why, and what must the operator do now.
+# Tab 1: mission. The plan and the robot from above, why the states are what they are, and
+# the drive: commanded against actual.
 
-why = raw('why', 'Why: do now, state and reason, phase, plan, holders', SUMMARY)
-timeline = transitions('timeline', 'Mission timeline', [
-    series('/system_manager/state.state', 'SM'),
-    series('/mission_controller/state.state', 'MC'),
-    series('/mission_controller/mission_state.state', 'LOP'),
-    series('/mission_controller/mission_state.current_layer', 'Layer'),
-    series(f'{SUMMARY}.operator_wait', 'Operator'),
-    series(f'{SUMMARY}.act_code', '/act'),
-])
-progress = plot('progress', 'Print progress (%)', [
-    series('/system_manager/execute_plan/_action/feedback.feedback.progress_percentage',
-           'Planned path length done (%)', GREEN),
-], min_y=0, max_y=100, window_s=1800)
-
-# Loggers that are not part of the mission flow. The mission log hides them; the
-# warnings log shows all.
-OTHER_LOGGERS = [
-    'controller_server', 'diffbot_base_controller', 'controller_manager',
-    'controller_manager.hardware_component.system.dcu', 'controller_manager.pal_statistics',
-    'resource_manager', 'rclcpp', 'local_costmap.local_costmap', 'lifecycle_manager_navigation',
-    'map_server', 'map_io', 'phcu_node', 'signal_tower', 'watchdog', 'mock_rc', 'dcu',
-    'ekf_local', 'robot_state_publisher', 'joint_state_broadcaster', 'map_to_odom',
-    'spawner_diffbot_base_controller', 'spawner_joint_state_broadcaster', 'pluginlib.ClassLoader',
-    'kdl_parser', 'foxglove_bridge', 'etk_api_bridge', 'bench_mon',
+# Frames of the robot (URDF) and of the localization. The map view hides their axes: the
+# robot is a triangle of the script robot_pose. A frame that is not in this list shows small
+# axes with no label.
+FRAMES = [
+    'map', 'odom', 'base_link', 'left_sprocket_link', 'right_sprocket_link',
+    'lift_platform_link', 'print_head_link', 'gps_primary_link', 'gps_secondary_link',
+    'tm500_imu_link',
 ]
-mission_log = log('mission_log', 'Mission log (SM, MC, arbiter, path executor)', 2, OTHER_LOGGERS)
 
-tab_mission = row([
-    column([why, mission_log], [58, 42]),
-    column([timeline, progress], [62, 38]),
-], [55, 45])
-
-# ---------------------------------------------------------------------------------------------
-# Tab 2: robot and path.
-
-three_d = panel('3D', 'map', 'Robot in map: path (green), lookahead (orange), trail (blue)', {
+# A 3D panel with an orthographic camera that looks down (the "2D" mode of the panel), fixed
+# in map. It draws only the script markers and the grid: no robot model, no maps. The
+# camera fits the wall_3m test mission (x -0.75 to 4.75 m, y 0 to 1.5 m). Pan and zoom with
+# the mouse for other plans.
+mission_map = panel('3D', 'mission_map', 'Mission map (map frame, from above)', {
     'cameraState': {
-        'distance': 6,
-        'perspective': True,
-        'phi': 50,
-        'thetaOffset': 45,
-        'target': [0.5, 0, 0],
-        'targetOffset': [0, 0, 0],
+        'distance': 7,  # orthographic: the height of the view (m)
+        'perspective': False,
+        'phi': 0,
+        'thetaOffset': 0,  # map +x to the right, +y up
+        'target': [0, 0, 0],
+        'targetOffset': [2.0, 0.75, 0],
         'targetOrientation': [0, 0, 0, 1],
         'fovy': 45,
         'near': 0.01,
-        'far': 5000,
+        'far': 1000,
     },
     'followMode': 'follow-none',
     'followTf': 'map',
-    'scene': {'transforms': {'labelSize': 0.06, 'axisScale': 0.4}},
-    'transforms': {},
+    'scene': {
+        'backgroundColor': '#111827',
+        'transforms': {'showLabel': False, 'axisScale': 0.05, 'editable': False},
+    },
+    'transforms': {f'frame:{frame}': {'visible': False} for frame in FRAMES},
     'topics': {
-        '/received_global_plan': {
-            'visible': True, 'type': 'line', 'lineWidth': 0.04,
-            'gradient': ['#22c55eff', '#22c55eff'],
-        },
-        '/lookahead_collision_arc': {
-            'visible': True, 'type': 'line', 'lineWidth': 0.015,
-            'gradient': ['#f59e0bb0', '#f59e0bb0'],
-        },
-        '/studio_script/lookahead_marker': {'visible': True},
-        '/studio_script/odom_trail': {'visible': True},
-        '/local_costmap/published_footprint': {'visible': True, 'lineWidth': 0.02, 'color': '#e5e7eb'},
-        '/map': {'visible': True, 'alpha': 0.3},
-        '/local_costmap/costmap': {'visible': False},
+        MISSION_PLAN: {'visible': True},
+        ROBOT_POSE: {'visible': True},
+        LOOKAHEAD: {'visible': True},
     },
     'layers': {
         'grid': {
             'visible': True, 'layerId': 'foxglove.Grid', 'instanceId': 'grid', 'label': 'Grid (1 m)',
-            'frameId': 'map', 'size': 10, 'divisions': 10, 'lineWidth': 1, 'color': '#248eff40',
-            'position': [0, 0, 0], 'rotation': [0, 0, 0],
-        },
-        'robot': {
-            'visible': True, 'layerId': 'foxglove.Urdf', 'instanceId': 'robot',
-            'label': 'Robot (URDF from /robot_description)', 'sourceType': 'topic',
-            'topic': '/robot_description', 'framePrefix': '', 'displayMode': 'auto',
+            'frameId': 'map', 'size': 20, 'divisions': 20, 'lineWidth': 1, 'color': '#ffffff26',
+            'position': [0, 0, -0.01], 'rotation': [0, 0, 0],
         },
     },
     'publish': {
@@ -291,105 +252,88 @@ three_d = panel('3D', 'map', 'Robot in map: path (green), lookahead (orange), tr
     },
     'imageMode': {},
 })
-speed = plot('speed', 'Speed (m/s): limit, Nav2, to drive, actual', [
-    series('/speed_limit.speed_limit', 'Segment limit', GREY),
-    series('/mission_controller/nav_cmd_vel.twist.linear.x', 'Nav2 command', AMBER),
-    series('/act/drive/driver/cmd_vel.twist.linear.x', 'Arbiter to drive', TEAL),
-    series('/odometry/local.twist.twist.linear.x', 'Actual (EKF)', GREEN),
-])
-segment = plot('segment', 'Segment: progress (0 to 1), distance to end (m)', [
-    series('/mission_controller/print_action/_action/feedback.feedback.segment_progress',
-           'Progress', GREEN),
-    series('/path_executor/execute_path/_action/feedback.feedback.distance_to_goal',
-           'Distance to end (m)', BLUE),
-], min_y=0)
-drive_chain = transitions('drive_chain', 'Drive chain', [
-    series('/path_executor/status.data', 'Path executor'),
-    series(f'{SUMMARY}.drive_holder', 'Drive holder'),
-    series('/act/drive/state.energized', 'Drive energized'),
-])
 
-tab_robot = row([
-    three_d,
-    column([speed, segment, drive_chain], [42, 33, 25]),
-], [60, 40])
+why = raw('why', 'Why: do now, reasons, plan, last holder change', f'{SUMMARY}.why')
 
-# ---------------------------------------------------------------------------------------------
-# Tab 3: actuators.
+# Commanded: what the drive gets from the arbiter (/act/drive/driver/cmd_vel), from the RC,
+# the UI or the MC. Nav2 command: what the Nav2 controller asks during a segment (the MC relays
+# it to the arbiter). Actual: the diff_drive odometry of the drive encoders.
+DRIVE_CMD = '/act/drive/driver/cmd_vel.twist'
+NAV2_CMD = '/mission_controller/nav_cmd_vel.twist'
+ACTUAL = '/act/drive/odom.twist.twist'
 
-actuators = table('actuators', 'Actuators: holder, health, ready, state', f'{ACTUATORS}.rows')
-control = transitions('control', 'Actuator timeline', [
-    series(f'{SUMMARY}.act_code', '/act'),
-    series(f'{SUMMARY}.drive_holder', 'Drive holder'),
-    series(f'{SUMMARY}.lift_holder', 'Lift holder'),
-    series(f'{SUMMARY}.vibe_holder', 'Vibe holder'),
-    series('/act/drive/state.energized', 'Drive energized'),
-    series('/act/lift/state.motion', 'Lift motion'),
-    series(f'{PHCU}.vibe_run', 'Vibe run'),
-])
-lift = plot('lift', 'Lift height (mm)', [
-    series('/act/lift/state.position_mm', 'Position', GREEN),
-    series('/act/lift/state.target_mm', 'Target', AMBER),
-])
-vibe = plot('vibe', 'Vibe frequency (Hz)', [
-    series('/act/vibe/state.hz_actual', 'Actual (VFD)', GREEN),
-    series(f'{PHCU}.vibe_hz_setpoint', 'Setpoint', AMBER),
-], min_y=0)
+linear = plot('linear', 'Linear speed (m/s): commanded vs actual', [
+    series('/speed_limit.speed_limit', 'Segment limit (MC)', GREY, line=False),
+    series(f'{NAV2_CMD}.linear.x', 'Nav2 command', AMBER),
+    series(f'{DRIVE_CMD}.linear.x', 'Commanded (to drive)', BLUE, width=2),
+    series(f'{ACTUAL}.linear.x', 'Actual (odometry)', GREEN, width=2),
+], window_s=120)
+rotation = plot('rotation', 'Rotation rate (rad/s): commanded vs actual', [
+    series(f'{NAV2_CMD}.angular.z', 'Nav2 command', AMBER),
+    series(f'{DRIVE_CMD}.angular.z', 'Commanded (to drive)', BLUE, width=2),
+    series(f'{ACTUAL}.angular.z', 'Actual (odometry)', GREEN, width=2),
+], window_s=120)
 
-tab_actuators = row([
-    column([actuators, control], [42, 58]),
-    column([lift, vibe]),
+tab_mission = row([
+    mission_map,
+    column([why, linear, rotation], [30, 35, 35]),
 ], [58, 42])
 
 # ---------------------------------------------------------------------------------------------
-# Tab 4: logs. Full width: log lines are long.
+# Tab 2: printhead and progress.
+
+lift = plot('lift', 'Lift height (mm): target vs actual', [
+    series('/act/lift/state.target_mm', 'Target', AMBER, width=2),
+    series('/act/lift/state.position_mm', 'Actual', GREEN, width=2),
+], window_s=300)
+vibe = plot('vibe', 'Vibe frequency (Hz): commanded vs actual', [
+    series(f'{PHCU}.vibe_hz_setpoint', 'Setpoint', GREY),
+    series(f'{PHCU}.vibe_hz_command', 'Commanded (setpoint while run, else 0)', AMBER, width=2),
+    series('/act/vibe/state.hz_actual', 'Actual (VFD)', GREEN, width=2),
+], min_y=0, window_s=300)
+actuators = table('actuators', 'Actuators: holder, health, ready, state', f'{ACTUATORS}.rows')
+progress = plot('progress', 'Print progress (%)', [
+    series('/system_manager/execute_plan/_action/feedback.feedback.progress_percentage',
+           'Planned path length done (%)', GREEN, width=2),
+], min_y=0, max_y=100, window_s=1800)
+
+tab_printhead = row([
+    column([lift, vibe]),
+    column([actuators, progress], [55, 45]),
+], [55, 45])
+
+# ---------------------------------------------------------------------------------------------
+# Tab 3: logs. Full width: log lines are long.
+
+# Loggers that are not part of the mission flow. The mission log hides them; the warnings
+# log shows all.
+OTHER_LOGGERS = [
+    'controller_server', 'diffbot_base_controller', 'controller_manager',
+    'controller_manager.hardware_component.system.dcu', 'controller_manager.pal_statistics',
+    'resource_manager', 'rclcpp', 'local_costmap.local_costmap', 'lifecycle_manager_navigation',
+    'map_server', 'map_io', 'phcu_node', 'signal_tower', 'watchdog', 'mock_rc', 'dcu',
+    'ekf_local', 'robot_state_publisher', 'joint_state_broadcaster', 'map_to_odom',
+    'spawner_diffbot_base_controller', 'spawner_joint_state_broadcaster', 'pluginlib.ClassLoader',
+    'kdl_parser', 'foxglove_bridge', 'etk_api_bridge', 'bench_mon',
+]
 
 tab_logs = column([
-    log('mission_log_full', 'Mission nodes: INFO and up', 2, OTHER_LOGGERS),
+    log('mission_log', 'Mission nodes (SM, MC, arbiter, path executor): INFO and up', 2,
+        OTHER_LOGGERS),
     log('warnings_log', 'All nodes: WARN and up', 3),
 ], [60, 40])
 
 # ---------------------------------------------------------------------------------------------
-# Tab 5: operator, mock mode only. These panels act on the system that the app connects to.
 
-warning = indicator(
-    'operator_warning', 'WARNING: mock mode only',
-    '/system_manager/state.state', [],
-    'WARNING: these buttons call services on the connected system. '
-    'On the robot, they move the robot. Use them in mock mode only.',
-    RED)
-tab_operator = column([
-    warning,
-    row([
-        call_service('request_arm', '1 Request arm', '/system_manager/request_arm', 'Request arm',
-                     'The MC asks for drive, lift and vibe. Then press GRANT.', BLUE),
-        call_service('grant', '2 GRANT (plays the RC)', '/act/system/command',
-                     'GRANT', 'Calls /act/system/command with command 3 (GRANT): '
-                     'the arbiter gives every pending request to its client.', AMBER,
-                     '{\n  "command": 3\n}'),
-        call_service('clear_error', 'Clear error', '/system_manager/clear_error_request',
-                     'Clear error', 'SM ERROR -> IDLE. Clears the loaded plan.', RED),
-    ]),
-    row([
-        call_service('green_light', '3 Green light (start_layer)', '/system_manager/start_layer',
-                     'Green light', 'Only in READY_TO_START. The MC starts the print segment.', GREEN),
-        call_service('cut_done', '4 Cut done', '/system_manager/cut_done', 'Cut done',
-                     'Only in WAITING_TO_RETURN. The MC starts the return segment.', GREEN),
-    ]),
-], [18, 41, 41])
-
-# ---------------------------------------------------------------------------------------------
-
+TABS = [
+    ('1 Mission', tab_mission),
+    ('2 Printhead and progress', tab_printhead),
+    ('3 Logs', tab_logs),
+]
 tabs_id = 'Tab!mission_tabs'
 config_by_id[tabs_id] = {
     'activeTabIdx': 0,
-    'tabs': [
-        {'title': '1 Mission', 'layout': tab_mission},
-        {'title': '2 Robot and path', 'layout': tab_robot},
-        {'title': '3 Actuators', 'layout': tab_actuators},
-        {'title': '4 Logs', 'layout': tab_logs},
-        {'title': '5 Operator (mock only)', 'layout': tab_operator},
-    ],
+    'tabs': [{'title': title, 'layout': layout} for title, layout in TABS],
 }
 
 
@@ -397,15 +341,14 @@ def user_script(file_name, title):
     return {'name': title, 'sourceCode': (SCRIPTS / file_name).read_text()}
 
 
+USER_SCRIPTS = ['mission_summary', 'phcu_commands', 'lookahead_marker', 'mission_plan',
+                'robot_pose', 'actuator_status']
 layout = {
     'configById': config_by_id,
     'globalVariables': {},
     'userNodes': {
-        'b6f1c2a0-0001-4d6e-9a51-print0mission': user_script('mission_summary.ts', 'mission_summary'),
-        'b6f1c2a0-0002-4d6e-9a51-print0mission': user_script('phcu_commands.ts', 'phcu_commands'),
-        'b6f1c2a0-0003-4d6e-9a51-print0mission': user_script('lookahead_marker.ts', 'lookahead_marker'),
-        'b6f1c2a0-0004-4d6e-9a51-print0mission': user_script('odom_trail.ts', 'odom_trail'),
-        'b6f1c2a0-0005-4d6e-9a51-print0mission': user_script('actuator_status.ts', 'actuator_status'),
+        f'b6f1c2a0-{i + 1:04d}-4d6e-9a51-print0mission': user_script(f'{name}.ts', name)
+        for i, name in enumerate(USER_SCRIPTS)
     },
     'playbackConfig': {'speed': 1.0},
     'layout': column([band, tabs_id], [10, 90]),
@@ -413,4 +356,5 @@ layout = {
 
 OUT.write_text(json.dumps(layout, indent=2) + '\n')
 panels = len(config_by_id) - 1
-print(f'wrote {OUT.relative_to(HERE)} ({panels} panels in the band and 5 tabs)')
+print(f'wrote {OUT.relative_to(HERE)} ({panels} panels in the band and {len(TABS)} tabs, '
+      f'{len(USER_SCRIPTS)} user scripts)')
