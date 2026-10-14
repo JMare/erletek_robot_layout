@@ -4,8 +4,8 @@
 // /odometry/local (the local EKF, frame odom) and draws them as one line: the path that the
 // robot drove. It adds a point when the robot moved 2 cm or more, and keeps the last 5000.
 //
-// Source: etk_system_tools/config/foxglove/scripts/odom_trail.ts. make_layout.py copies this
-// file into print_mission.layout.json.
+// Source: scripts/odom_trail.ts. make_layout.py copies this file into
+// print_mission.layout.json.
 import { Input } from "./types";
 import { SceneUpdate } from "@foxglove/schemas";
 

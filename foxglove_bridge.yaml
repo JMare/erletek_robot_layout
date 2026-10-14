@@ -7,6 +7,9 @@
 #                        default list has only ".stl", so the bridge refuses the meshes.
 #
 # ros2 run foxglove_bridge foxglove_bridge --ros-args --params-file <this file>
+#
+# The container cannot read this file. README.md gives the same parameters on the command
+# line, and a "docker cp" alternative.
 /**:
   ros__parameters:
     port: 8765

@@ -4,8 +4,8 @@
 // Pure Pursuit lookahead point (/lookahead_point, in base_link) as a sphere with a label.
 // The sphere goes away 1 s after the last point, so it shows only while a segment runs.
 //
-// Source: etk_system_tools/config/foxglove/scripts/lookahead_marker.ts. make_layout.py copies
-// this file into print_mission.layout.json.
+// Source: scripts/lookahead_marker.ts. make_layout.py copies this file into
+// print_mission.layout.json.
 import { Input } from "./types";
 import { SceneUpdate } from "@foxglove/schemas";
 

@@ -1,11 +1,14 @@
 // Mission summary for the print_mission layout.
 //
 // Reads the System Manager (SM) state, the Mission Controller (MC) controller and mission
-// states, and the /act arbiter status. Publishes one message with the state names, the
-// reasons, the actuator holders and the action that the operator must do now.
+// states, and the /act arbiter status. Publishes one message: the action that the operator
+// must do now, each state with its reason, the layer, and the actuator holders.
 //
-// Source: etk_system_tools/config/foxglove/scripts/mission_summary.ts. make_layout.py copies
-// this file into print_mission.layout.json.
+// The "Why" panel shows the first fields, in this order. The band tiles and the State
+// Transitions panels use the short fields at the end.
+//
+// Source: scripts/mission_summary.ts. make_layout.py copies this file into
+// print_mission.layout.json.
 import { Input } from "./types";
 
 export const inputs = [
@@ -17,24 +20,29 @@ export const inputs = [
 export const output = "/studio_script/mission_summary";
 
 type Output = {
-  // Short code for the "Operator" indicator: none, upload, arm, grant, request_arm,
-  // execute, green_light, cut_done, control_lost, clear_error, rc, wait.
-  operator_wait: string;
   // What the operator must do now, in words.
-  operator_action: string;
-  sm_state: string;
-  sm_message: string;
-  plan_id: string;
-  mc_state: string;
-  mc_message: string;
-  lop: string;
-  layer: string;
+  do_now: string;
+  // State name and its reason, for example "IDLE: Plan ... loaded, waiting for ...".
+  sm: string;
+  mc: string;
+  // Layer Operation Phase (LOP) and layer, for example "3 PRINTING, layer 2 / 3".
+  phase: string;
+  plan: string;
   act: string;
+  holders: string;
+  waiting_for_grant: string;
+  last_change: string;
+  // Short code for the "Operator" tile: none, wait, upload, arm, grant, request_arm,
+  // execute, green_light, cut_done, control_lost, clear_error, rc.
+  operator_wait: string;
+  // Short code for the "/act" tile: armed, disarmed, rc_lost.
+  act_code: string;
+  // Text for the "Layer" tile, for example "2 / 3".
+  layer_text: string;
+  // Holder of each actuator, for the State Transitions panels.
   drive_holder: string;
   lift_holder: string;
   vibe_holder: string;
-  pending_requests: string;
-  holder_change: string;
 };
 
 type Event =
@@ -62,6 +70,7 @@ const SM_OPERATING = 2;
 const SM_ERROR = 3;
 const MC_ARMED = 2;
 const MC_OPERATING = 3;
+const LOP_NONE = 0;
 const LOP_ALIGNING = 1;
 const LOP_READY_TO_START = 2;
 const LOP_PRINTING = 3;
@@ -69,6 +78,9 @@ const LOP_WAITING_TO_RETURN = 4;
 const LOP_RETURNING = 5;
 // etk_actuation_interfaces/msg/Priority
 const LEVEL_MC = 50;
+const LEVEL_RC = 255;
+
+const NO_DATA = "(no data)";
 
 // The last message of each input. The script runs once for each input message.
 let sm: SmState | undefined;
@@ -78,19 +90,24 @@ let act: ActStatus | undefined;
 
 function name(names: string[], value: number | undefined): string {
   if (value === undefined) {
-    return "(no data)";
+    return NO_DATA;
   }
   return names[value] ?? `UNKNOWN (${value})`;
 }
 
-// Priority level -> client. Holder 255 is the RC baseline: no client holds the actuator.
+// "NAME: reason", or "NAME" when the reason is empty.
+function withReason(stateName: string, reason: string | undefined): string {
+  return reason !== undefined && reason !== "" ? `${stateName}: ${reason}` : stateName;
+}
+
+// Priority level -> client. Level 255 is the RC baseline: no client holds the actuator.
 function levelName(level: number): string {
   switch (level) {
-    case 255:
+    case LEVEL_RC:
       return "RC";
     case 100:
       return "UI";
-    case 50:
+    case LEVEL_MC:
       return "MC";
     case 0:
       return "none";
@@ -99,20 +116,36 @@ function levelName(level: number): string {
   }
 }
 
+function holderShort(status: ActuatorStatus): string {
+  return status.level === LEVEL_RC ? "RC (no client)" : `${levelName(status.level)} (${status.level})`;
+}
+
+// Holder, and the client that waits for GRANT. One value for each situation, so that the
+// State Transitions panel shows a new block at each change.
 function holder(status: ActuatorStatus | undefined): string {
   if (status === undefined) {
-    return "(no data)";
+    return NO_DATA;
   }
-  const who = status.level === 255 ? "RC (baseline, no client)" : `${levelName(status.level)} (${status.level})`;
   if (status.requested_level > 0) {
-    return `${who}; ${levelName(status.requested_level)} waits for GRANT`;
+    return `${holderShort(status)}, ${levelName(status.requested_level)} waits for GRANT`;
   }
-  return who;
+  return holderShort(status);
+}
+
+function holders(status: ActStatus | undefined): string {
+  if (status === undefined) {
+    return NO_DATA;
+  }
+  return [
+    `drive ${holderShort(status.drive)}`,
+    `lift ${holderShort(status.lift)}`,
+    `vibe ${holderShort(status.vibe)}`,
+  ].join(", ");
 }
 
 function pendingRequests(status: ActStatus | undefined): string {
   if (status === undefined) {
-    return "(no data)";
+    return NO_DATA;
   }
   const parts: string[] = [];
   const actuators: [string, ActuatorStatus][] = [
@@ -129,9 +162,9 @@ function pendingRequests(status: ActStatus | undefined): string {
   return parts.length > 0 ? parts.join(", ") : "none";
 }
 
-function holderChange(status: ActStatus | undefined): string {
+function lastChange(status: ActStatus | undefined): string {
   if (status === undefined) {
-    return "(no data)";
+    return NO_DATA;
   }
   return [
     `drive ${name(CHANGE_NAMES, status.drive.change_reason)}`,
@@ -147,13 +180,13 @@ function mcRequestsPending(status: ActStatus): boolean {
 // [code, text]: what the operator must do now.
 function operatorAction(): [string, string] {
   if (sm === undefined || act === undefined) {
-    return ["wait", "Waiting for /system_manager/state and /act/status."];
+    return ["wait", "Wait for /system_manager/state and /act/status."];
   }
   if (!act.rc_present) {
     return ["rc", "Switch on the RC. The arbiter gets no deadman, so /act is DISARMED."];
   }
   if (sm.state === SM_ERROR) {
-    return ["clear_error", "Read the SM message. Fix the cause. Then call /system_manager/clear_error_request."];
+    return ["clear_error", "Read the SM reason. Fix the cause. Then call /system_manager/clear_error_request."];
   }
   if (sm.state === SM_IDLE) {
     if (sm.current_plan_id === "") {
@@ -198,6 +231,16 @@ function operatorAction(): [string, string] {
   return ["wait", `Unknown SM state ${sm.state}.`];
 }
 
+function actCode(status: ActStatus | undefined): string {
+  if (status === undefined) {
+    return "";
+  }
+  if (!status.rc_present) {
+    return "rc_lost";
+  }
+  return status.armed ? "armed" : "disarmed";
+}
+
 export default function script(event: Event): Output {
   switch (event.topic) {
     case "/system_manager/state":
@@ -215,30 +258,40 @@ export default function script(event: Event): Output {
   }
 
   const [code, text] = operatorAction();
-  let act_text = "(no data)";
-  if (act !== undefined) {
-    act_text = `${act.armed ? "ARMED" : "DISARMED"}, RC ${act.rc_present ? "present" : "NOT present"}`;
-  }
-  let layer = "-";
+
+  let layerText = "-";
   if (mission !== undefined && mission.total_layers > 0) {
-    layer = `${mission.current_layer} / ${mission.total_layers}`;
+    layerText = `${mission.current_layer} / ${mission.total_layers}`;
+  }
+  let phase = NO_DATA;
+  if (mission !== undefined) {
+    const lop = name(LOP_NAMES, mission.state);
+    phase = mission.state === LOP_NONE ? lop : `${mission.state} ${lop}, layer ${layerText}`;
+  }
+  let actText = NO_DATA;
+  if (act !== undefined) {
+    actText = `${act.armed ? "ARMED" : "DISARMED"}, RC ${act.rc_present ? "present" : "NOT present"}`;
+  }
+  let plan = NO_DATA;
+  if (sm !== undefined) {
+    plan = sm.current_plan_id !== "" ? sm.current_plan_id : "(none)";
   }
 
   return {
+    do_now: text,
+    sm: withReason(name(SM_NAMES, sm?.state), sm?.message),
+    mc: withReason(name(MC_NAMES, mc?.state), mc?.message),
+    phase,
+    plan,
+    act: actText,
+    holders: holders(act),
+    waiting_for_grant: pendingRequests(act),
+    last_change: lastChange(act),
     operator_wait: code,
-    operator_action: text,
-    sm_state: name(SM_NAMES, sm?.state),
-    sm_message: sm?.message ?? "",
-    plan_id: sm?.current_plan_id ?? "",
-    mc_state: name(MC_NAMES, mc?.state),
-    mc_message: mc?.message ?? "",
-    lop: name(LOP_NAMES, mission?.state),
-    layer,
-    act: act_text,
+    act_code: actCode(act),
+    layer_text: layerText,
     drive_holder: holder(act?.drive),
     lift_holder: holder(act?.lift),
     vibe_holder: holder(act?.vibe),
-    pending_requests: pendingRequests(act),
-    holder_change: holderChange(act),
   };
 }
