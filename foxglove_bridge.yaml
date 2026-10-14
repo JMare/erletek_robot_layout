@@ -1,0 +1,16 @@
+# foxglove_bridge parameters for the print_mission layout (print_mission.layout.json).
+#
+# Two changes from the bridge defaults:
+#   include_hidden       true: the action feedback topics (.../_action/feedback) are hidden
+#                        topics. The progress panels of the layout read them.
+#   asset_uri_allowlist  adds the upper-case ".STL" of the robot_description meshes. The
+#                        default list has only ".stl", so the bridge refuses the meshes.
+#
+# ros2 run foxglove_bridge foxglove_bridge --ros-args --params-file <this file>
+/**:
+  ros__parameters:
+    port: 8765
+    address: "0.0.0.0"
+    include_hidden: true
+    asset_uri_allowlist:
+      - '^package://(?:[-\w%]+/)*[-\w%.]+\.(?:dae|fbx|glb|gltf|jpeg|jpg|mtl|obj|png|stl|STL|tif|tiff|urdf|webp|xacro)$'

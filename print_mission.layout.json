@@ -1,0 +1,1487 @@
+{
+  "configById": {
+    "Indicator!sm_state": {
+      "foxglovePanelTitle": "SM: System Manager state",
+      "path": "/system_manager/state.state",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "0",
+          "color": "#6b7280",
+          "label": "IDLE: no plan, or waits for MC ARMED"
+        },
+        {
+          "operator": "=",
+          "rawValue": "1",
+          "color": "#2563eb",
+          "label": "READY: plan loaded, MC ARMED"
+        },
+        {
+          "operator": "=",
+          "rawValue": "2",
+          "color": "#16a34a",
+          "label": "OPERATING: print runs"
+        },
+        {
+          "operator": "=",
+          "rawValue": "3",
+          "color": "#dc2626",
+          "label": "ERROR: see SM message"
+        }
+      ]
+    },
+    "Indicator!mc_state": {
+      "foxglovePanelTitle": "MC: Mission Controller state",
+      "path": "/mission_controller/state.state",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "0",
+          "color": "#6b7280",
+          "label": "UNARMED: holds nothing"
+        },
+        {
+          "operator": "=",
+          "rawValue": "1",
+          "color": "#d97706",
+          "label": "PARTIALLY_ARMED: holds some"
+        },
+        {
+          "operator": "=",
+          "rawValue": "2",
+          "color": "#2563eb",
+          "label": "ARMED: holds drive, lift, vibe"
+        },
+        {
+          "operator": "=",
+          "rawValue": "3",
+          "color": "#16a34a",
+          "label": "OPERATING: runs the goal"
+        },
+        {
+          "operator": "=",
+          "rawValue": "4",
+          "color": "#dc2626",
+          "label": "ERROR: goal failed"
+        }
+      ]
+    },
+    "Indicator!lop": {
+      "foxglovePanelTitle": "LOP: layer phase",
+      "path": "/mission_controller/mission_state.state",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "0",
+          "color": "#6b7280",
+          "label": "NONE (MC not OPERATING)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "1",
+          "color": "#2563eb",
+          "label": "1 ALIGNING: lift, then drive to start"
+        },
+        {
+          "operator": "=",
+          "rawValue": "2",
+          "color": "#d97706",
+          "label": "2 READY_TO_START: waits for green light"
+        },
+        {
+          "operator": "=",
+          "rawValue": "3",
+          "color": "#16a34a",
+          "label": "3 PRINTING: lift, vibe, print segment"
+        },
+        {
+          "operator": "=",
+          "rawValue": "4",
+          "color": "#d97706",
+          "label": "4 WAITING_TO_RETURN: waits for cut done"
+        },
+        {
+          "operator": "=",
+          "rawValue": "5",
+          "color": "#2563eb",
+          "label": "5 RETURNING: return segment"
+        }
+      ]
+    },
+    "Indicator!operator": {
+      "foxglovePanelTitle": "Operator: action needed now",
+      "path": "/studio_script/mission_summary.operator_wait",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "none",
+          "color": "#16a34a",
+          "label": "No action: the robot works"
+        },
+        {
+          "operator": "=",
+          "rawValue": "wait",
+          "color": "#6b7280",
+          "label": "Wait"
+        },
+        {
+          "operator": "=",
+          "rawValue": "upload",
+          "color": "#2563eb",
+          "label": "Upload a print plan"
+        },
+        {
+          "operator": "=",
+          "rawValue": "arm",
+          "color": "#d97706",
+          "label": "ARM on the RC (D-pad Up)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "grant",
+          "color": "#d97706",
+          "label": "Press GRANT on the RC (D-pad Right)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "request_arm",
+          "color": "#d97706",
+          "label": "Request arm, then GRANT"
+        },
+        {
+          "operator": "=",
+          "rawValue": "execute",
+          "color": "#2563eb",
+          "label": "Start the print (execute_plan)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "green_light",
+          "color": "#d97706",
+          "label": "Give the GREEN LIGHT (start_layer)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "cut_done",
+          "color": "#d97706",
+          "label": "Cut, then confirm CUT DONE"
+        },
+        {
+          "operator": "=",
+          "rawValue": "control_lost",
+          "color": "#dc2626",
+          "label": "Control lost: see MC message"
+        },
+        {
+          "operator": "=",
+          "rawValue": "clear_error",
+          "color": "#dc2626",
+          "label": "Clear the error"
+        },
+        {
+          "operator": "=",
+          "rawValue": "rc",
+          "color": "#dc2626",
+          "label": "Switch on the RC"
+        }
+      ]
+    },
+    "Indicator!act_armed": {
+      "foxglovePanelTitle": "/act safety gate",
+      "path": "/act/status.armed",
+      "style": "background",
+      "fallbackColor": "#dc2626",
+      "fallbackLabel": "DISARMED",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "ARMED"
+        }
+      ]
+    },
+    "Indicator!rc_present": {
+      "foxglovePanelTitle": "RC deadman",
+      "path": "/act/status.rc_present",
+      "style": "background",
+      "fallbackColor": "#dc2626",
+      "fallbackLabel": "RC NOT present",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "RC present"
+        }
+      ]
+    },
+    "Indicator!drive_holder": {
+      "foxglovePanelTitle": "Drive: holder",
+      "path": "/act/status.drive.level",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "50",
+          "color": "#2563eb",
+          "label": "Drive: MC (50)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "100",
+          "color": "#7c3aed",
+          "label": "Drive: UI (100)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "255",
+          "color": "#6b7280",
+          "label": "Drive: RC, no client (255)"
+        }
+      ]
+    },
+    "Indicator!lift_holder": {
+      "foxglovePanelTitle": "Lift: holder",
+      "path": "/act/status.lift.level",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "50",
+          "color": "#2563eb",
+          "label": "Lift: MC (50)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "100",
+          "color": "#7c3aed",
+          "label": "Lift: UI (100)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "255",
+          "color": "#6b7280",
+          "label": "Lift: RC, no client (255)"
+        }
+      ]
+    },
+    "Indicator!vibe_holder": {
+      "foxglovePanelTitle": "Vibe: holder",
+      "path": "/act/status.vibe.level",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "50",
+          "color": "#2563eb",
+          "label": "Vibe: MC (50)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "100",
+          "color": "#7c3aed",
+          "label": "Vibe: UI (100)"
+        },
+        {
+          "operator": "=",
+          "rawValue": "255",
+          "color": "#6b7280",
+          "label": "Vibe: RC, no client (255)"
+        }
+      ]
+    },
+    "RawMessages!summary": {
+      "foxglovePanelTitle": "Why: state names, reasons, layer, holders, next operator action",
+      "topicPath": "/studio_script/mission_summary",
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "expansion": "all",
+      "fontSize": 13
+    },
+    "StateTransitions!timeline": {
+      "foxglovePanelTitle": "Mission timeline: read from top to bottom, left to right",
+      "paths": [
+        {
+          "value": "/system_manager/state.state",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "SM state"
+        },
+        {
+          "value": "/mission_controller/state.state",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "MC controller state"
+        },
+        {
+          "value": "/mission_controller/mission_state.state",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "LOP (mission state)"
+        },
+        {
+          "value": "/mission_controller/mission_state.current_layer",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Layer"
+        },
+        {
+          "value": "/studio_script/mission_summary.operator_wait",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Operator action needed"
+        },
+        {
+          "value": "/act/status.armed",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "/act ARMED"
+        },
+        {
+          "value": "/act/status.rc_present",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "RC present"
+        },
+        {
+          "value": "/studio_script/mission_summary.drive_holder",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Drive holder"
+        },
+        {
+          "value": "/studio_script/mission_summary.lift_holder",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Lift holder"
+        },
+        {
+          "value": "/studio_script/mission_summary.vibe_holder",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Vibe holder"
+        },
+        {
+          "value": "/path_executor/status.data",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Path executor"
+        },
+        {
+          "value": "/act/lift/state.motion",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Lift motion"
+        },
+        {
+          "value": "/studio_script/phcu_commands.vibe_run",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Vibe run"
+        }
+      ],
+      "isSynced": true,
+      "showPoints": true
+    },
+    "Plot!progress": {
+      "foxglovePanelTitle": "Print progress (%): planned path length done",
+      "paths": [
+        {
+          "value": "/system_manager/execute_plan/_action/feedback.feedback.progress_percentage",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Print progress (%)",
+          "color": "#16a34a"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 1800,
+      "sidebarDimension": 240,
+      "minYValue": 0,
+      "maxYValue": 100
+    },
+    "RawMessages!sm_feedback": {
+      "foxglovePanelTitle": "execute_plan feedback (SM to GUI)",
+      "topicPath": "/system_manager/execute_plan/_action/feedback.feedback",
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "expansion": "all",
+      "fontSize": 13
+    },
+    "RosOut!mission_log": {
+      "foxglovePanelTitle": "Mission log: system_manager, mission_controller, arbiter, path_executor",
+      "topicToRender": "/rosout",
+      "searchTerms": [],
+      "minLogLevel": 2,
+      "nameFilter": {
+        "controller_server": {
+          "visible": false
+        },
+        "diffbot_base_controller": {
+          "visible": false
+        },
+        "controller_manager": {
+          "visible": false
+        },
+        "controller_manager.hardware_component.system.dcu": {
+          "visible": false
+        },
+        "controller_manager.pal_statistics": {
+          "visible": false
+        },
+        "resource_manager": {
+          "visible": false
+        },
+        "rclcpp": {
+          "visible": false
+        },
+        "local_costmap.local_costmap": {
+          "visible": false
+        },
+        "lifecycle_manager_navigation": {
+          "visible": false
+        },
+        "map_server": {
+          "visible": false
+        },
+        "map_io": {
+          "visible": false
+        },
+        "phcu_node": {
+          "visible": false
+        },
+        "signal_tower": {
+          "visible": false
+        },
+        "watchdog": {
+          "visible": false
+        },
+        "mock_rc": {
+          "visible": false
+        },
+        "dcu": {
+          "visible": false
+        },
+        "ekf_local": {
+          "visible": false
+        },
+        "robot_state_publisher": {
+          "visible": false
+        },
+        "joint_state_broadcaster": {
+          "visible": false
+        },
+        "map_to_odom": {
+          "visible": false
+        },
+        "spawner_diffbot_base_controller": {
+          "visible": false
+        },
+        "spawner_joint_state_broadcaster": {
+          "visible": false
+        },
+        "pluginlib.ClassLoader": {
+          "visible": false
+        },
+        "kdl_parser": {
+          "visible": false
+        },
+        "foxglove_bridge": {
+          "visible": false
+        },
+        "etk_api_bridge": {
+          "visible": false
+        },
+        "bench_mon": {
+          "visible": false
+        }
+      }
+    },
+    "3D!map": {
+      "foxglovePanelTitle": "Robot in map: segment path (green), lookahead (orange), driven trail (blue)",
+      "cameraState": {
+        "distance": 6,
+        "perspective": true,
+        "phi": 50,
+        "thetaOffset": 45,
+        "target": [
+          0.5,
+          0,
+          0
+        ],
+        "targetOffset": [
+          0,
+          0,
+          0
+        ],
+        "targetOrientation": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "fovy": 45,
+        "near": 0.01,
+        "far": 5000
+      },
+      "followMode": "follow-none",
+      "followTf": "map",
+      "scene": {
+        "transforms": {
+          "labelSize": 0.06,
+          "axisScale": 0.4
+        }
+      },
+      "transforms": {},
+      "topics": {
+        "/received_global_plan": {
+          "visible": true,
+          "type": "line",
+          "lineWidth": 0.04,
+          "gradient": [
+            "#22c55eff",
+            "#22c55eff"
+          ]
+        },
+        "/lookahead_collision_arc": {
+          "visible": true,
+          "type": "line",
+          "lineWidth": 0.015,
+          "gradient": [
+            "#f59e0bb0",
+            "#f59e0bb0"
+          ]
+        },
+        "/studio_script/lookahead_marker": {
+          "visible": true
+        },
+        "/studio_script/odom_trail": {
+          "visible": true
+        },
+        "/local_costmap/published_footprint": {
+          "visible": true,
+          "lineWidth": 0.02,
+          "color": "#e5e7eb"
+        },
+        "/map": {
+          "visible": true,
+          "alpha": 0.3
+        },
+        "/local_costmap/costmap": {
+          "visible": false
+        }
+      },
+      "layers": {
+        "grid": {
+          "visible": true,
+          "layerId": "foxglove.Grid",
+          "instanceId": "grid",
+          "label": "Grid (1 m)",
+          "frameId": "map",
+          "size": 10,
+          "divisions": 10,
+          "lineWidth": 1,
+          "color": "#248eff40",
+          "position": [
+            0,
+            0,
+            0
+          ],
+          "rotation": [
+            0,
+            0,
+            0
+          ]
+        },
+        "robot": {
+          "visible": true,
+          "layerId": "foxglove.Urdf",
+          "instanceId": "robot",
+          "label": "Robot (URDF from /robot_description)",
+          "sourceType": "topic",
+          "topic": "/robot_description",
+          "framePrefix": "",
+          "displayMode": "auto"
+        }
+      },
+      "publish": {
+        "type": "point",
+        "poseTopic": "/move_base_simple/goal",
+        "pointTopic": "/clicked_point",
+        "poseEstimateTopic": "/initialpose",
+        "poseEstimateXDeviation": 0.5,
+        "poseEstimateYDeviation": 0.5,
+        "poseEstimateThetaDeviation": 0.26179939
+      },
+      "imageMode": {}
+    },
+    "Plot!speed": {
+      "foxglovePanelTitle": "Speed (m/s): segment limit, Nav2 command, sent to /act, forwarded, actual",
+      "paths": [
+        {
+          "value": "/speed_limit.speed_limit",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Segment speed limit (/speed_limit)",
+          "color": "#6b7280"
+        },
+        {
+          "value": "/mission_controller/nav_cmd_vel.twist.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Nav2 command (nav_cmd_vel)",
+          "color": "#d97706"
+        },
+        {
+          "value": "/act/drive/cmd.cmd.twist.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Into the arbiter (/act/drive/cmd)",
+          "color": "#7c3aed"
+        },
+        {
+          "value": "/act/drive/driver/cmd_vel.twist.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Arbiter to drive (driver/cmd_vel)",
+          "color": "#0891b2"
+        },
+        {
+          "value": "/odometry/local.twist.twist.linear.x",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Actual (EKF /odometry/local)",
+          "color": "#16a34a"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 180,
+      "sidebarDimension": 240
+    },
+    "Plot!turn": {
+      "foxglovePanelTitle": "Turn rate (rad/s): Nav2 command vs actual",
+      "paths": [
+        {
+          "value": "/mission_controller/nav_cmd_vel.twist.angular.z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Nav2 command",
+          "color": "#d97706"
+        },
+        {
+          "value": "/odometry/local.twist.twist.angular.z",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Actual (EKF)",
+          "color": "#16a34a"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 180,
+      "sidebarDimension": 240
+    },
+    "Plot!segment": {
+      "foxglovePanelTitle": "Segment: progress (0 to 1) and distance to goal (m)",
+      "paths": [
+        {
+          "value": "/mission_controller/print_action/_action/feedback.feedback.segment_progress",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Segment progress (MC feedback)",
+          "color": "#16a34a"
+        },
+        {
+          "value": "/path_executor/execute_path/_action/feedback.feedback.distance_to_goal",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Distance to segment end (m)",
+          "color": "#2563eb"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 180,
+      "sidebarDimension": 240,
+      "minYValue": 0
+    },
+    "Plot!lift": {
+      "foxglovePanelTitle": "Lift height (mm): position vs target",
+      "paths": [
+        {
+          "value": "/act/lift/state.position_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Position",
+          "color": "#16a34a"
+        },
+        {
+          "value": "/act/lift/state.target_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Target (segment_height_mm)",
+          "color": "#d97706"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 180,
+      "sidebarDimension": 240
+    },
+    "Plot!vibe": {
+      "foxglovePanelTitle": "Vibe frequency (Hz): actual vs setpoint",
+      "paths": [
+        {
+          "value": "/act/vibe/state.hz_actual",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Actual (VFD)",
+          "color": "#16a34a"
+        },
+        {
+          "value": "/studio_script/phcu_commands.vibe_hz_setpoint",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Setpoint (PHCU node)",
+          "color": "#d97706"
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "top",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": true,
+      "xAxisVal": "timestamp",
+      "followingViewWidth": 180,
+      "sidebarDimension": 240,
+      "minYValue": 0
+    },
+    "StateTransitions!control": {
+      "foxglovePanelTitle": "Actuator control: arbiter levels and driver states",
+      "paths": [
+        {
+          "value": "/act/status.armed",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "/act ARMED"
+        },
+        {
+          "value": "/act/status.rc_present",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "RC present"
+        },
+        {
+          "value": "/act/status.drive.level",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Drive holder level"
+        },
+        {
+          "value": "/act/status.drive.requested_level",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Drive requested level"
+        },
+        {
+          "value": "/act/status.drive.change_reason",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Drive change reason"
+        },
+        {
+          "value": "/act/status.lift.level",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Lift holder level"
+        },
+        {
+          "value": "/act/status.lift.requested_level",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Lift requested level"
+        },
+        {
+          "value": "/act/status.lift.change_reason",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Lift change reason"
+        },
+        {
+          "value": "/act/status.vibe.level",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Vibe holder level"
+        },
+        {
+          "value": "/act/status.vibe.requested_level",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Vibe requested level"
+        },
+        {
+          "value": "/act/status.vibe.change_reason",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Vibe change reason"
+        },
+        {
+          "value": "/act/drive/state.energized",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Drive energized"
+        },
+        {
+          "value": "/act/lift/state.motion",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Lift motion"
+        },
+        {
+          "value": "/studio_script/phcu_commands.vibe_run",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "Vibe run"
+        }
+      ],
+      "isSynced": true,
+      "showPoints": true
+    },
+    "Indicator!drive_health": {
+      "foxglovePanelTitle": "Drive health",
+      "path": "/act/drive/health.health",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "0",
+          "color": "#16a34a",
+          "label": "drive: OK"
+        },
+        {
+          "operator": "=",
+          "rawValue": "1",
+          "color": "#d97706",
+          "label": "drive: OUTAGE"
+        },
+        {
+          "operator": "=",
+          "rawValue": "2",
+          "color": "#dc2626",
+          "label": "drive: FAULT"
+        }
+      ]
+    },
+    "Indicator!lift_health": {
+      "foxglovePanelTitle": "Lift health",
+      "path": "/act/lift/health.health",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "0",
+          "color": "#16a34a",
+          "label": "lift: OK"
+        },
+        {
+          "operator": "=",
+          "rawValue": "1",
+          "color": "#d97706",
+          "label": "lift: OUTAGE"
+        },
+        {
+          "operator": "=",
+          "rawValue": "2",
+          "color": "#dc2626",
+          "label": "lift: FAULT"
+        }
+      ]
+    },
+    "Indicator!vibe_health": {
+      "foxglovePanelTitle": "Vibe health",
+      "path": "/act/vibe/health.health",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "0",
+          "color": "#16a34a",
+          "label": "vibe: OK"
+        },
+        {
+          "operator": "=",
+          "rawValue": "1",
+          "color": "#d97706",
+          "label": "vibe: OUTAGE"
+        },
+        {
+          "operator": "=",
+          "rawValue": "2",
+          "color": "#dc2626",
+          "label": "vibe: FAULT"
+        }
+      ]
+    },
+    "Indicator!gate_health": {
+      "foxglovePanelTitle": "Gate health",
+      "path": "/act/gate/health.health",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "0",
+          "color": "#16a34a",
+          "label": "gate: OK"
+        },
+        {
+          "operator": "=",
+          "rawValue": "1",
+          "color": "#d97706",
+          "label": "gate: OUTAGE"
+        },
+        {
+          "operator": "=",
+          "rawValue": "2",
+          "color": "#dc2626",
+          "label": "gate: FAULT"
+        }
+      ]
+    },
+    "Indicator!drive_ready": {
+      "foxglovePanelTitle": "Drive ready",
+      "path": "/act/drive/health.ready",
+      "style": "background",
+      "fallbackColor": "#d97706",
+      "fallbackLabel": "drive: NOT ready (setup)",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "drive: ready"
+        }
+      ]
+    },
+    "Indicator!lift_ready": {
+      "foxglovePanelTitle": "Lift ready",
+      "path": "/act/lift/health.ready",
+      "style": "background",
+      "fallbackColor": "#d97706",
+      "fallbackLabel": "lift: NOT ready (setup)",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "lift: ready"
+        }
+      ]
+    },
+    "Indicator!vibe_ready": {
+      "foxglovePanelTitle": "Vibe ready",
+      "path": "/act/vibe/health.ready",
+      "style": "background",
+      "fallbackColor": "#d97706",
+      "fallbackLabel": "vibe: NOT ready (setup)",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "vibe: ready"
+        }
+      ]
+    },
+    "Indicator!gate_ready": {
+      "foxglovePanelTitle": "Gate ready",
+      "path": "/act/gate/health.ready",
+      "style": "background",
+      "fallbackColor": "#d97706",
+      "fallbackLabel": "gate: NOT ready (setup)",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "gate: ready"
+        }
+      ]
+    },
+    "Indicator!drive_energized": {
+      "foxglovePanelTitle": "Drive energized",
+      "path": "/act/drive/state.energized",
+      "style": "background",
+      "fallbackColor": "#d97706",
+      "fallbackLabel": "Drive NOT energized",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "Drive energized"
+        }
+      ]
+    },
+    "Indicator!phcu_link": {
+      "foxglovePanelTitle": "PHCU link",
+      "path": "/act/phcu/status.link_up",
+      "style": "background",
+      "fallbackColor": "#dc2626",
+      "fallbackLabel": "PHCU link DOWN",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "PHCU link up"
+        }
+      ]
+    },
+    "Indicator!phcu_armed": {
+      "foxglovePanelTitle": "PHCU armed stream",
+      "path": "/studio_script/phcu_commands.lift_armed",
+      "style": "background",
+      "fallbackColor": "#d97706",
+      "fallbackLabel": "PHCU NOT armed",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "true",
+          "color": "#16a34a",
+          "label": "PHCU gets armed"
+        }
+      ]
+    },
+    "RosOut!mission_log_full": {
+      "foxglovePanelTitle": "Mission nodes: all messages (INFO and up)",
+      "topicToRender": "/rosout",
+      "searchTerms": [],
+      "minLogLevel": 2,
+      "nameFilter": {
+        "controller_server": {
+          "visible": false
+        },
+        "diffbot_base_controller": {
+          "visible": false
+        },
+        "controller_manager": {
+          "visible": false
+        },
+        "controller_manager.hardware_component.system.dcu": {
+          "visible": false
+        },
+        "controller_manager.pal_statistics": {
+          "visible": false
+        },
+        "resource_manager": {
+          "visible": false
+        },
+        "rclcpp": {
+          "visible": false
+        },
+        "local_costmap.local_costmap": {
+          "visible": false
+        },
+        "lifecycle_manager_navigation": {
+          "visible": false
+        },
+        "map_server": {
+          "visible": false
+        },
+        "map_io": {
+          "visible": false
+        },
+        "phcu_node": {
+          "visible": false
+        },
+        "signal_tower": {
+          "visible": false
+        },
+        "watchdog": {
+          "visible": false
+        },
+        "mock_rc": {
+          "visible": false
+        },
+        "dcu": {
+          "visible": false
+        },
+        "ekf_local": {
+          "visible": false
+        },
+        "robot_state_publisher": {
+          "visible": false
+        },
+        "joint_state_broadcaster": {
+          "visible": false
+        },
+        "map_to_odom": {
+          "visible": false
+        },
+        "spawner_diffbot_base_controller": {
+          "visible": false
+        },
+        "spawner_joint_state_broadcaster": {
+          "visible": false
+        },
+        "pluginlib.ClassLoader": {
+          "visible": false
+        },
+        "kdl_parser": {
+          "visible": false
+        },
+        "foxglove_bridge": {
+          "visible": false
+        },
+        "etk_api_bridge": {
+          "visible": false
+        },
+        "bench_mon": {
+          "visible": false
+        }
+      }
+    },
+    "RosOut!warnings_log": {
+      "foxglovePanelTitle": "All nodes: warnings and errors",
+      "topicToRender": "/rosout",
+      "searchTerms": [],
+      "minLogLevel": 3,
+      "nameFilter": {}
+    },
+    "Indicator!operator_warning": {
+      "foxglovePanelTitle": "WARNING",
+      "path": "/system_manager/state.state",
+      "style": "background",
+      "fallbackColor": "#dc2626",
+      "fallbackLabel": "WARNING: the buttons below call services on the running system. Use them in mock mode only. On the robot, the GUI and the RC are the operator.",
+      "rules": []
+    },
+    "CallService!grant": {
+      "foxglovePanelTitle": "GRANT (plays the RC, mock only)",
+      "serviceName": "/act/system/command",
+      "requestPayload": "{\n  \"command\": 3\n}",
+      "layout": "vertical",
+      "buttonText": "GRANT",
+      "buttonTooltip": "Calls /act/system/command with command 3 (GRANT): the arbiter gives every pending request to its client.",
+      "buttonColor": "#d97706"
+    },
+    "CallService!request_arm": {
+      "foxglovePanelTitle": "Request arm",
+      "serviceName": "/system_manager/request_arm",
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "buttonText": "Request arm",
+      "buttonTooltip": "The MC asks for drive, lift and vibe. Then press GRANT.",
+      "buttonColor": "#2563eb"
+    },
+    "CallService!clear_error": {
+      "foxglovePanelTitle": "Clear error",
+      "serviceName": "/system_manager/clear_error_request",
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "buttonText": "Clear error",
+      "buttonTooltip": "SM ERROR -> IDLE. Clears the loaded plan.",
+      "buttonColor": "#dc2626"
+    },
+    "CallService!green_light": {
+      "foxglovePanelTitle": "Green light (start_layer)",
+      "serviceName": "/system_manager/start_layer",
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "buttonText": "Green light",
+      "buttonTooltip": "Only in READY_TO_START. The MC starts the print segment.",
+      "buttonColor": "#16a34a"
+    },
+    "CallService!cut_done": {
+      "foxglovePanelTitle": "Cut done",
+      "serviceName": "/system_manager/cut_done",
+      "requestPayload": "{}",
+      "layout": "vertical",
+      "buttonText": "Cut done",
+      "buttonTooltip": "Only in WAITING_TO_RETURN. The MC starts the return segment.",
+      "buttonColor": "#16a34a"
+    },
+    "Tab!mission_tabs": {
+      "activeTabIdx": 0,
+      "tabs": [
+        {
+          "title": "1 Mission timeline",
+          "layout": {
+            "direction": "row",
+            "first": "StateTransitions!timeline",
+            "second": {
+              "direction": "column",
+              "first": "Plot!progress",
+              "second": {
+                "direction": "column",
+                "first": "RawMessages!sm_feedback",
+                "second": "RosOut!mission_log",
+                "splitPercentage": 26.67
+              },
+              "splitPercentage": 25.0
+            },
+            "splitPercentage": 58.0
+          }
+        },
+        {
+          "title": "2 Robot and path",
+          "layout": {
+            "direction": "row",
+            "first": "3D!map",
+            "second": {
+              "direction": "column",
+              "first": "Plot!speed",
+              "second": {
+                "direction": "column",
+                "first": "Plot!turn",
+                "second": "Plot!segment",
+                "splitPercentage": 41.67
+              },
+              "splitPercentage": 40.0
+            },
+            "splitPercentage": 60.0
+          }
+        },
+        {
+          "title": "3 Actuators",
+          "layout": {
+            "direction": "row",
+            "first": {
+              "direction": "column",
+              "first": "Plot!lift",
+              "second": "Plot!vibe",
+              "splitPercentage": 50.0
+            },
+            "second": {
+              "direction": "column",
+              "first": "StateTransitions!control",
+              "second": {
+                "direction": "column",
+                "first": {
+                  "direction": "row",
+                  "first": "Indicator!drive_health",
+                  "second": {
+                    "direction": "row",
+                    "first": "Indicator!lift_health",
+                    "second": {
+                      "direction": "row",
+                      "first": "Indicator!vibe_health",
+                      "second": "Indicator!gate_health",
+                      "splitPercentage": 50.0
+                    },
+                    "splitPercentage": 33.33
+                  },
+                  "splitPercentage": 25.0
+                },
+                "second": {
+                  "direction": "column",
+                  "first": {
+                    "direction": "row",
+                    "first": "Indicator!drive_ready",
+                    "second": {
+                      "direction": "row",
+                      "first": "Indicator!lift_ready",
+                      "second": {
+                        "direction": "row",
+                        "first": "Indicator!vibe_ready",
+                        "second": "Indicator!gate_ready",
+                        "splitPercentage": 50.0
+                      },
+                      "splitPercentage": 33.33
+                    },
+                    "splitPercentage": 25.0
+                  },
+                  "second": {
+                    "direction": "row",
+                    "first": "Indicator!drive_energized",
+                    "second": {
+                      "direction": "row",
+                      "first": "Indicator!phcu_link",
+                      "second": "Indicator!phcu_armed",
+                      "splitPercentage": 50.0
+                    },
+                    "splitPercentage": 33.33
+                  },
+                  "splitPercentage": 50.0
+                },
+                "splitPercentage": 33.33
+              },
+              "splitPercentage": 62.0
+            },
+            "splitPercentage": 45.0
+          }
+        },
+        {
+          "title": "4 Logs",
+          "layout": {
+            "direction": "row",
+            "first": "RosOut!mission_log_full",
+            "second": "RosOut!warnings_log",
+            "splitPercentage": 50.0
+          }
+        },
+        {
+          "title": "5 Operator (mock only)",
+          "layout": {
+            "direction": "column",
+            "first": "Indicator!operator_warning",
+            "second": {
+              "direction": "column",
+              "first": {
+                "direction": "row",
+                "first": "CallService!grant",
+                "second": {
+                  "direction": "row",
+                  "first": "CallService!request_arm",
+                  "second": "CallService!clear_error",
+                  "splitPercentage": 50.0
+                },
+                "splitPercentage": 33.33
+              },
+              "second": {
+                "direction": "row",
+                "first": "CallService!green_light",
+                "second": "CallService!cut_done",
+                "splitPercentage": 50.0
+              },
+              "splitPercentage": 50.0
+            },
+            "splitPercentage": 16.0
+          }
+        }
+      ]
+    }
+  },
+  "globalVariables": {},
+  "userNodes": {
+    "b6f1c2a0-0001-4d6e-9a51-print0mission": {
+      "name": "mission_summary",
+      "sourceCode": "// Mission summary for the print_mission layout.\n//\n// Reads the System Manager (SM) state, the Mission Controller (MC) controller and mission\n// states, and the /act arbiter status. Publishes one message with the state names, the\n// reasons, the actuator holders and the action that the operator must do now.\n//\n// Source: etk_system_tools/config/foxglove/scripts/mission_summary.ts. make_layout.py copies\n// this file into print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/system_manager/state\",\n  \"/mission_controller/state\",\n  \"/mission_controller/mission_state\",\n  \"/act/status\",\n];\nexport const output = \"/studio_script/mission_summary\";\n\ntype Output = {\n  // Short code for the \"Operator\" indicator: none, upload, arm, grant, request_arm,\n  // execute, green_light, cut_done, control_lost, clear_error, rc, wait.\n  operator_wait: string;\n  // What the operator must do now, in words.\n  operator_action: string;\n  sm_state: string;\n  sm_message: string;\n  plan_id: string;\n  mc_state: string;\n  mc_message: string;\n  lop: string;\n  layer: string;\n  act: string;\n  drive_holder: string;\n  lift_holder: string;\n  vibe_holder: string;\n  pending_requests: string;\n  holder_change: string;\n};\n\ntype Event =\n  | Input<\"/system_manager/state\">\n  | Input<\"/mission_controller/state\">\n  | Input<\"/mission_controller/mission_state\">\n  | Input<\"/act/status\">;\n\ntype SmState = Input<\"/system_manager/state\">[\"message\"];\ntype McState = Input<\"/mission_controller/state\">[\"message\"];\ntype MissionState = Input<\"/mission_controller/mission_state\">[\"message\"];\ntype ActStatus = Input<\"/act/status\">[\"message\"];\ntype ActuatorStatus = ActStatus[\"drive\"];\n\n// Constants of cpr_interfaces/msg/{SystemManagerState,MissionControllerState,MissionState}.\nconst SM_NAMES = [\"IDLE\", \"READY\", \"OPERATING\", \"ERROR\"];\nconst MC_NAMES = [\"UNARMED\", \"PARTIALLY_ARMED\", \"ARMED\", \"OPERATING\", \"ERROR\"];\nconst LOP_NAMES = [\"NONE\", \"ALIGNING\", \"READY_TO_START\", \"PRINTING\", \"WAITING_TO_RETURN\", \"RETURNING\"];\n// Constants of etk_actuation_interfaces/msg/ActuatorStatus (change_reason).\nconst CHANGE_NAMES = [\"NONE\", \"TAKEN\", \"RELEASED\", \"REVOKED\", \"DISARMED\", \"GRANTED\"];\n\nconst SM_IDLE = 0;\nconst SM_READY = 1;\nconst SM_OPERATING = 2;\nconst SM_ERROR = 3;\nconst MC_ARMED = 2;\nconst MC_OPERATING = 3;\nconst LOP_ALIGNING = 1;\nconst LOP_READY_TO_START = 2;\nconst LOP_PRINTING = 3;\nconst LOP_WAITING_TO_RETURN = 4;\nconst LOP_RETURNING = 5;\n// etk_actuation_interfaces/msg/Priority\nconst LEVEL_MC = 50;\n\n// The last message of each input. The script runs once for each input message.\nlet sm: SmState | undefined;\nlet mc: McState | undefined;\nlet mission: MissionState | undefined;\nlet act: ActStatus | undefined;\n\nfunction name(names: string[], value: number | undefined): string {\n  if (value === undefined) {\n    return \"(no data)\";\n  }\n  return names[value] ?? `UNKNOWN (${value})`;\n}\n\n// Priority level -> client. Holder 255 is the RC baseline: no client holds the actuator.\nfunction levelName(level: number): string {\n  switch (level) {\n    case 255:\n      return \"RC\";\n    case 100:\n      return \"UI\";\n    case 50:\n      return \"MC\";\n    case 0:\n      return \"none\";\n    default:\n      return `level ${level}`;\n  }\n}\n\nfunction holder(status: ActuatorStatus | undefined): string {\n  if (status === undefined) {\n    return \"(no data)\";\n  }\n  const who = status.level === 255 ? \"RC (baseline, no client)\" : `${levelName(status.level)} (${status.level})`;\n  if (status.requested_level > 0) {\n    return `${who}; ${levelName(status.requested_level)} waits for GRANT`;\n  }\n  return who;\n}\n\nfunction pendingRequests(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return \"(no data)\";\n  }\n  const parts: string[] = [];\n  const actuators: [string, ActuatorStatus][] = [\n    [\"drive\", status.drive],\n    [\"lift\", status.lift],\n    [\"vibe\", status.vibe],\n    [\"gate\", status.gate],\n  ];\n  for (const [actuator, s] of actuators) {\n    if (s.requested_level > 0) {\n      parts.push(`${actuator}: ${levelName(s.requested_level)} (${s.requested_level})`);\n    }\n  }\n  return parts.length > 0 ? parts.join(\", \") : \"none\";\n}\n\nfunction holderChange(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return \"(no data)\";\n  }\n  return [\n    `drive ${name(CHANGE_NAMES, status.drive.change_reason)}`,\n    `lift ${name(CHANGE_NAMES, status.lift.change_reason)}`,\n    `vibe ${name(CHANGE_NAMES, status.vibe.change_reason)}`,\n  ].join(\", \");\n}\n\nfunction mcRequestsPending(status: ActStatus): boolean {\n  return [status.drive, status.lift, status.vibe].some((s) => s.requested_level === LEVEL_MC);\n}\n\n// [code, text]: what the operator must do now.\nfunction operatorAction(): [string, string] {\n  if (sm === undefined || act === undefined) {\n    return [\"wait\", \"Waiting for /system_manager/state and /act/status.\"];\n  }\n  if (!act.rc_present) {\n    return [\"rc\", \"Switch on the RC. The arbiter gets no deadman, so /act is DISARMED.\"];\n  }\n  if (sm.state === SM_ERROR) {\n    return [\"clear_error\", \"Read the SM message. Fix the cause. Then call /system_manager/clear_error_request.\"];\n  }\n  if (sm.state === SM_IDLE) {\n    if (sm.current_plan_id === \"\") {\n      return [\"upload\", \"Upload a print plan: /system_manager/upload_print_plan (GUI or CLI).\"];\n    }\n    if (!act.armed) {\n      return [\"arm\", \"ARM the /act layer on the RC: hold D-pad Up.\"];\n    }\n    if (mcRequestsPending(act)) {\n      return [\"grant\", \"Press GRANT on the RC (D-pad Right). The MC asks for the drive, the lift and the vibe.\"];\n    }\n    if (mc !== undefined && mc.state !== MC_ARMED) {\n      return [\"request_arm\", \"The MC does not hold all three actuators. Call /system_manager/request_arm, then press GRANT.\"];\n    }\n    return [\"wait\", \"Wait. The SM goes to READY at the next MC state message.\"];\n  }\n  if (sm.state === SM_READY) {\n    return [\"execute\", \"Start the print: send a goal to the /system_manager/execute_plan action.\"];\n  }\n  if (sm.state === SM_OPERATING) {\n    if (mc !== undefined && mc.state === MC_OPERATING && mc.message !== \"\") {\n      return [\n        \"control_lost\",\n        `The MC reports \"${mc.message}\". The print continues or fails. To get control back: /system_manager/request_arm, then GRANT.`,\n      ];\n    }\n    switch (mission?.state) {\n      case LOP_ALIGNING:\n        return [\"none\", \"No action. The lift goes to the alignment height, then the robot drives to the layer start.\"];\n      case LOP_READY_TO_START:\n        return [\"green_light\", \"Check the robot at the layer start. Then give the green light: /system_manager/start_layer.\"];\n      case LOP_PRINTING:\n        return [\"none\", \"No action. The lift goes to the print height, then the robot prints the layer.\"];\n      case LOP_WAITING_TO_RETURN:\n        return [\"cut_done\", \"Cut the wall end. Then confirm: /system_manager/cut_done.\"];\n      case LOP_RETURNING:\n        return [\"none\", \"No action. The robot drives the return segment.\"];\n      default:\n        return [\"wait\", \"Wait for the MC mission state.\"];\n    }\n  }\n  return [\"wait\", `Unknown SM state ${sm.state}.`];\n}\n\nexport default function script(event: Event): Output {\n  switch (event.topic) {\n    case \"/system_manager/state\":\n      sm = event.message;\n      break;\n    case \"/mission_controller/state\":\n      mc = event.message;\n      break;\n    case \"/mission_controller/mission_state\":\n      mission = event.message;\n      break;\n    case \"/act/status\":\n      act = event.message;\n      break;\n  }\n\n  const [code, text] = operatorAction();\n  let act_text = \"(no data)\";\n  if (act !== undefined) {\n    act_text = `${act.armed ? \"ARMED\" : \"DISARMED\"}, RC ${act.rc_present ? \"present\" : \"NOT present\"}`;\n  }\n  let layer = \"-\";\n  if (mission !== undefined && mission.total_layers > 0) {\n    layer = `${mission.current_layer} / ${mission.total_layers}`;\n  }\n\n  return {\n    operator_wait: code,\n    operator_action: text,\n    sm_state: name(SM_NAMES, sm?.state),\n    sm_message: sm?.message ?? \"\",\n    plan_id: sm?.current_plan_id ?? \"\",\n    mc_state: name(MC_NAMES, mc?.state),\n    mc_message: mc?.message ?? \"\",\n    lop: name(LOP_NAMES, mission?.state),\n    layer,\n    act: act_text,\n    drive_holder: holder(act?.drive),\n    lift_holder: holder(act?.lift),\n    vibe_holder: holder(act?.vibe),\n    pending_requests: pendingRequests(act),\n    holder_change: holderChange(act),\n  };\n}\n"
+    },
+    "b6f1c2a0-0002-4d6e-9a51-print0mission": {
+      "name": "phcu_commands",
+      "sourceCode": "// PHCU commands for the print_mission layout.\n//\n// /phcu/diagnostics holds the commanded vibe (run, setpoint) as text key-values. This script\n// turns them into fields that the Plot and State Transitions panels can show.\n//\n// Source: etk_system_tools/config/foxglove/scripts/phcu_commands.ts. make_layout.py copies\n// this file into print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\"/phcu/diagnostics\"];\nexport const output = \"/studio_script/phcu_commands\";\n\ntype Output = {\n  vibe_run: boolean; // the PHCU node runs the vibe (latched /act/vibe/driver/run)\n  vibe_hz_setpoint: number; // the frequency that the PHCU node sends (Hz)\n  lift_armed: boolean; // the PHCU node gets a fresh armed stream from the arbiter\n  link_up: boolean; // the PHCU heartbeat is present\n  summary: string; // DiagnosticStatus message: \"OK\" or the problems\n};\n\nfunction value(event: Input<\"/phcu/diagnostics\">, key: string): string | undefined {\n  for (const kv of event.message.values) {\n    if (kv.key === key) {\n      return kv.value;\n    }\n  }\n  return undefined;\n}\n\nexport default function script(event: Input<\"/phcu/diagnostics\">): Output | undefined {\n  const run = value(event, \"vibe_run\");\n  const hz = value(event, \"vibe_hz_setpoint\");\n  if (run === undefined || hz === undefined) {\n    return undefined;\n  }\n  return {\n    vibe_run: run === \"true\",\n    vibe_hz_setpoint: Number(hz),\n    lift_armed: value(event, \"armed\") === \"true\",\n    link_up: value(event, \"link_up\") === \"true\",\n    summary: event.message.message,\n  };\n}\n"
+    },
+    "b6f1c2a0-0003-4d6e-9a51-print0mission": {
+      "name": "lookahead_marker",
+      "sourceCode": "// Nav2 lookahead point for the print_mission layout.\n//\n// The 3D panel does not draw geometry_msgs/PointStamped. This script draws the Regulated\n// Pure Pursuit lookahead point (/lookahead_point, in base_link) as a sphere with a label.\n// The sphere goes away 1 s after the last point, so it shows only while a segment runs.\n//\n// Source: etk_system_tools/config/foxglove/scripts/lookahead_marker.ts. make_layout.py copies\n// this file into print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/lookahead_point\"];\nexport const output = \"/studio_script/lookahead_marker\";\n\nexport default function script(event: Input<\"/lookahead_point\">): SceneUpdate {\n  const p = event.message.point;\n  const pose = { position: { x: p.x, y: p.y, z: p.z }, orientation: { x: 0, y: 0, z: 0, w: 1 } };\n  const color = { r: 1.0, g: 0.6, b: 0.0, a: 1.0 };\n  return {\n    deletions: [],\n    entities: [\n      {\n        timestamp: event.receiveTime,\n        frame_id: event.message.header.frame_id,\n        id: \"lookahead\",\n        lifetime: { sec: 1, nsec: 0 },\n        frame_locked: true,\n        metadata: [],\n        arrows: [],\n        cubes: [],\n        spheres: [{ pose, size: { x: 0.08, y: 0.08, z: 0.08 }, color }],\n        cylinders: [],\n        lines: [],\n        triangles: [],\n        texts: [\n          {\n            pose: { position: { x: p.x, y: p.y, z: p.z + 0.15 }, orientation: pose.orientation },\n            billboard: true,\n            font_size: 14,\n            scale_invariant: true,\n            color,\n            text: \"lookahead\",\n          },\n        ],\n        models: [],\n      },\n    ],\n  };\n}\n"
+    },
+    "b6f1c2a0-0004-4d6e-9a51-print0mission": {
+      "name": "odom_trail",
+      "sourceCode": "// Odometry trail for the print_mission layout.\n//\n// The 3D panel does not draw nav_msgs/Odometry. This script keeps the positions of\n// /odometry/local (the local EKF, frame odom) and draws them as one line: the path that the\n// robot drove. It adds a point when the robot moved 2 cm or more, and keeps the last 5000.\n//\n// Source: etk_system_tools/config/foxglove/scripts/odom_trail.ts. make_layout.py copies this\n// file into print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/odometry/local\"];\nexport const output = \"/studio_script/odom_trail\";\n\nconst MIN_STEP_M = 0.02;\nconst MAX_POINTS = 5000;\n\ntype Point = { x: number; y: number; z: number };\nconst trail: Point[] = [];\n\nexport default function script(event: Input<\"/odometry/local\">): SceneUpdate | undefined {\n  const p = event.message.pose.pose.position;\n  const last = trail[trail.length - 1];\n  if (last !== undefined && Math.hypot(p.x - last.x, p.y - last.y) < MIN_STEP_M) {\n    return undefined;\n  }\n  trail.push({ x: p.x, y: p.y, z: 0.01 });\n  if (trail.length > MAX_POINTS) {\n    trail.shift();\n  }\n  if (trail.length < 2) {\n    return undefined;\n  }\n  return {\n    deletions: [],\n    entities: [\n      {\n        timestamp: event.receiveTime,\n        frame_id: event.message.header.frame_id,\n        id: \"odom_trail\",\n        lifetime: { sec: 0, nsec: 0 },\n        frame_locked: true,\n        metadata: [],\n        arrows: [],\n        cubes: [],\n        spheres: [],\n        cylinders: [],\n        lines: [\n          {\n            type: 0, // LINE_STRIP\n            pose: { position: { x: 0, y: 0, z: 0 }, orientation: { x: 0, y: 0, z: 0, w: 1 } },\n            thickness: 3,\n            scale_invariant: true,\n            points: trail.slice(),\n            color: { r: 0.2, g: 0.6, b: 1.0, a: 1.0 },\n            colors: [],\n            indices: [],\n          },\n        ],\n        triangles: [],\n        texts: [],\n        models: [],\n      },\n    ],\n  };\n}\n"
+    }
+  },
+  "playbackConfig": {
+    "speed": 1.0
+  },
+  "layout": {
+    "direction": "column",
+    "first": {
+      "direction": "row",
+      "first": {
+        "direction": "column",
+        "first": {
+          "direction": "row",
+          "first": "Indicator!sm_state",
+          "second": {
+            "direction": "row",
+            "first": "Indicator!mc_state",
+            "second": {
+              "direction": "row",
+              "first": "Indicator!lop",
+              "second": "Indicator!operator",
+              "splitPercentage": 50.0
+            },
+            "splitPercentage": 33.33
+          },
+          "splitPercentage": 25.0
+        },
+        "second": {
+          "direction": "row",
+          "first": "Indicator!act_armed",
+          "second": {
+            "direction": "row",
+            "first": "Indicator!rc_present",
+            "second": {
+              "direction": "row",
+              "first": "Indicator!drive_holder",
+              "second": {
+                "direction": "row",
+                "first": "Indicator!lift_holder",
+                "second": "Indicator!vibe_holder",
+                "splitPercentage": 50.0
+              },
+              "splitPercentage": 33.33
+            },
+            "splitPercentage": 25.0
+          },
+          "splitPercentage": 20.0
+        },
+        "splitPercentage": 50.0
+      },
+      "second": "RawMessages!summary",
+      "splitPercentage": 62.0
+    },
+    "second": "Tab!mission_tabs",
+    "splitPercentage": 24.0
+  }
+}
