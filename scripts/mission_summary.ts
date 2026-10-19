@@ -39,6 +39,9 @@ type Codes = {
   act_code: string;
   // Text for the "Layer" tile, for example "2 / 3".
   layer_text: string;
+  // Short code for the "Actuator grants" tile: granted (MC holds all three), pending (a GRANT
+  // is waited for), partial (MC holds some, none pending), none (the RC holds them).
+  grant_code: string;
 };
 
 type Output = {
@@ -176,6 +179,22 @@ function actCode(status: ActStatus | undefined): string {
   return status.armed ? "armed" : "disarmed";
 }
 
+function grantCode(status: ActStatus | undefined): string {
+  if (status === undefined) {
+    return "";
+  }
+  const acts = [status.drive, status.lift, status.vibe];
+  const held = acts.filter((a) => a.level === LEVEL_MC).length;
+  const pending = acts.some((a) => a.requested_level === LEVEL_MC);
+  if (held === 3) {
+    return "granted";
+  }
+  if (pending) {
+    return "pending";
+  }
+  return held > 0 ? "partial" : "none";
+}
+
 export default function script(event: Event): Output {
   switch (event.topic) {
     case "/system_manager/state":
@@ -215,6 +234,7 @@ export default function script(event: Event): Output {
       operator_wait: code,
       act_code: actCode(act),
       layer_text: layerText,
+      grant_code: grantCode(act),
     },
   };
 }

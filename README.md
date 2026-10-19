@@ -108,14 +108,19 @@ Read it from left to right.
 | MC state | `/mission_controller/state` | `UNARMED` to `OPERATING`, `ERROR` |
 | Layer phase (LOP) | `/mission_controller/mission_state` | The five Layer Operation Phases. Amber: the MC waits for the operator. |
 | Layer | script `mission_summary` | Current layer / total layers |
-| /act gate | script `mission_summary` | `/act ARMED`, `/act DISARMED` or `RC LOST` |
-| Operator: do now | script `mission_summary` | The next operator action, or "No action: the robot works" |
+| /act gate | script `mission_summary` | `ARMED`, `DISARMED` or `RC LOST` |
+| Operator: do now | script `mission_summary` | The next operator action, or "Robot working" |
+
+The tile title names the signal, so the value drops the redundant prefix and stays short:
+the Indicator auto-sizes its text to the panel, so a long label would clip sideways. Thus the
+SM/MC tiles show `OPERATING` (not `SM OPERATING`), and the phase tile shows `2 READY` and
+`4 WAIT RETURN` for `2 READY TO START` and `4 WAITING TO RETURN`.
 
 ### Tabs
 
 | Tab | Panels |
 |---|---|
-| 1 Mission | **Mission map**: the plan and the robot from above, in `map`. **Why**: what to do now in words, the reason for the SM state and for the MC state, the plan ID, the last holder change of the actuators. **Linear speed** and **Rotation rate**: commanded against actual. |
+| 1 Mission | Everything for one print, so the operator never leaves it (a tab change unmounts the panels and the cross-track plot loses its points). **Mission map**: the plan and the robot from above, in `map`, with **Print cross-track vs distance** below it. **Actuator grants** and **Segment progress** (bar, with time and distance left). **Why**: what to do now in words, the reason for the SM state and for the MC state, the plan ID, the last holder change. **Linear speed** and **Rotation rate**: commanded against actual. |
 | 2 Printhead and progress | **Lift height**: target against actual. **Vibe frequency**: commanded against actual. **Actuators** table: holder, health, ready and state of the drive, the lift, the vibe, the gate and the PHCU board. **Print progress (%)**. |
 | 3 Logs | Mission nodes (SM, MC, arbiter, path executor; INFO and up). All nodes (WARN and up). |
 
@@ -128,8 +133,16 @@ no costmap. It shows only the markers of three User Scripts:
 | Marker | Script | Inputs |
 |---|---|---|
 | The plan: one line for each segment of each layer | `mission_plan` | `/system_manager/loaded_plan`, `/mission_controller/mission_state` |
-| The robot (yellow triangle that points forward) and its driven trail (white line) | `robot_pose` | `/tf`, `/tf_static`, `/system_manager/loaded_plan` |
+| The robot footprint and its driven trail (white line) | `robot_pose` | `/tf`, `/tf_static`, `/system_manager/loaded_plan` |
 | The Nav2 lookahead point (orange dot) | `lookahead_marker` | `/lookahead_point` |
+
+The robot footprint is the tracked robot drawn in `base_link`: a transparent yellow chassis
+(0.90 m long, 0.90 m wide), two dark track bands (1.20 m wide over the tracks), a solid
+outline for the extents, and a filled triangle that points forward. A white crosshair and red
+dot mark `base_link` at the center of the frame (where the pose is published); a cyan crosshair
+and dot mark the **nozzle** (printhead tip), 0.36 m behind `base_link`. The nozzle offset is
+hard-coded in the plane: `printhead_tip_link` hangs off `lift_platform_link`, whose TF is not
+published in mock mode and only moves the nozzle in `z`.
 
 The plan lines:
 
@@ -198,6 +211,41 @@ The columns of the **Actuators** table:
 | health | `OK`, `OUTAGE` or `FAULT`. `OLD (x s)` when the last health message is older than 1 s. The MC then refuses the green light. |
 | ready | `NO (setup)`: the actuator needs operator setup, for example the lift is not homed. For the PHCU board: the link. |
 | state | Drive: energized. Lift: motion, position → target, calibration. Vibe: state, run, actual and setpoint frequency, VFD fault. Gate: state. PHCU board: armed stream and the diagnostics message. |
+
+### Cross-track error
+
+The script `cross_track` measures how far the **nozzle** (printhead tip) is from the path that
+Nav2 follows (`/path_executor/received_path`, latched, in `map`). The nozzle is what shapes the
+wall; it is 0.36 m behind `base_link`, so a heading error moves it sideways. The script projects
+the nozzle onto the path and reports the signed offset (positive = left of the path).
+
+It reads the pose from TF (`map → odom → base_link`, like `robot_pose`), the drive speed from
+`/act/drive/odom`, and the phase and layer from `/mission_controller/mission_state` (only the
+drive phases: `ALIGNING → APPROACH`, `PRINTING → PRINT`, `RETURNING → RETURN`). It publishes
+while a drive phase runs, after the robot moved at least 5 mm along the path (so near 10 Hz, not
+the TF rate).
+
+The **Print cross-track vs distance** plot (below the map) uses `along_m` (the distance along
+the path) as its x-axis. The nozzle error of each layer goes to its own field (`layers.l1_mm ..
+l9_mm`, set only while that layer prints), so the plot draws **one coloured line per layer**, up
+to 9 layers (`MAX_LAYERS`). Every layer prints the same path, so the lines lie on the same x and overlay: a
+deviation at the same place repeats across layers, a one-off does not. The plot updates live as
+the robot drives.
+
+What the number means: the error is against the estimated pose (EKF), not the real robot. In
+mock mode the odometry is perfect, so it shows only the controller's error (useful for RPP
+tuning). On the robot, GPS/EKF jitter shows up in it too; real wall accuracy still needs
+measuring on site. On an arc, even with perfect tracking the nozzle sits about `0.36² / 2r`
+outside the arc (6.5 mm at `r = 10 m`): that is geometry, not a tracking error.
+
+### Grants and segment progress
+
+Next to the map, two panels track the active segment:
+
+| Panel | Source | What it tells |
+|---|---|---|
+| **Actuator grants** | `mission_summary` `codes.grant_code` | `MC GRANTED` (the MC holds the drive, lift and vibe — ready to print), `WAIT GRANT` (a GRANT is pending), `PARTIAL`, or `NOT GRANTED` (the RC holds them). |
+| **Segment progress (%)** | `cross_track` `seg_percent` | A bar of how far `base_link` is along the active segment, with the time and the distance left below it (`remaining.time`, `remaining.distance`; the time uses the drive odometry speed, and is `-` when stopped). |
 
 ## No service buttons
 

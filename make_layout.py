@@ -90,19 +90,27 @@ def series(value, label, color=None, line=True, width=None):
     return item
 
 
-def plot(name, title, paths, min_y=None, max_y=None, window_s=180):
+def plot(name, title, paths, min_y=None, max_y=None, window_s=180, x_field=None,
+         legend_display='top'):
+    """A plot panel. x_field: a message path for the x-axis (distance, not time). Default: time.
+    legend_display: 'top', 'left' (for many series) or 'none'."""
     config = {
         'paths': paths,
-        'showLegend': True,
-        'legendDisplay': 'top',
+        'showLegend': legend_display != 'none',
+        'legendDisplay': legend_display,
         'showPlotValuesInLegend': True,
         'showXAxisLabels': True,
         'showYAxisLabels': True,
-        'isSynced': True,
-        'xAxisVal': 'timestamp',
-        'followingViewWidth': window_s,
+        # Time plots share one x-axis; the distance plot has its own.
+        'isSynced': x_field is None,
         'sidebarDimension': 240,
     }
+    if x_field is None:
+        config['xAxisVal'] = 'timestamp'
+        config['followingViewWidth'] = window_s
+    else:
+        config['xAxisVal'] = 'custom'
+        config['xAxisPath'] = {'value': x_field, 'enabled': True}
     if min_y is not None:
         config['minYValue'] = min_y
     if max_y is not None:
@@ -126,6 +134,18 @@ def table(name, title, topic_path):
     return panel('Table', name, title, {'topicPath': topic_path})
 
 
+def gauge(name, title, path, min_v, max_v, gradient=(RED, GREEN)):
+    """A bar gauge of one value, coloured low -> high across the gradient."""
+    return panel('Gauge', name, title, {
+        'path': path,
+        'minValue': min_v,
+        'maxValue': max_v,
+        'colorMode': 'gradient',
+        'gradient': list(gradient),
+        'reverse': False,
+    })
+
+
 def log(name, title, min_level, hidden_names=()):
     return panel('RosOut', name, title, {
         'topicToRender': '/rosout',
@@ -141,60 +161,71 @@ PHCU = '/studio_script/phcu_commands'
 MISSION_PLAN = '/studio_script/mission_plan'
 ROBOT_POSE = '/studio_script/robot_pose'
 LOOKAHEAD = '/studio_script/lookahead_marker'
+CROSS_TRACK = '/studio_script/cross_track'
 
 # ---------------------------------------------------------------------------------------------
 # Band: one row, always visible. The only place for the states: where are we, and what must
 # the operator do now. The tabs do not show these states again.
 
+# The tile titles already name the signal (SM state, MC state, ...), so the value labels drop
+# the redundant prefix and stay short: the Indicator auto-sizes the font to the panel, so a
+# long label clips sideways. Keep the longest label of a tile within its width (see the band
+# split below).
 SM_RULES = [
-    rule(0, 'SM IDLE', GREY),
-    rule(1, 'SM READY', BLUE),
-    rule(2, 'SM OPERATING', GREEN),
-    rule(3, 'SM ERROR', RED),
+    rule(0, 'IDLE', GREY),
+    rule(1, 'READY', BLUE),
+    rule(2, 'OPERATING', GREEN),
+    rule(3, 'ERROR', RED),
 ]
 MC_RULES = [
-    rule(0, 'MC UNARMED', GREY),
-    rule(1, 'MC PARTIALLY ARMED', AMBER),
-    rule(2, 'MC ARMED', BLUE),
-    rule(3, 'MC OPERATING', GREEN),
-    rule(4, 'MC ERROR', RED),
+    rule(0, 'UNARMED', GREY),
+    rule(1, 'PART ARMED', AMBER),
+    rule(2, 'ARMED', BLUE),
+    rule(3, 'OPERATING', GREEN),
+    rule(4, 'ERROR', RED),
 ]
 LOP_RULES = [
-    rule(0, 'LOP NONE', GREY),
+    rule(0, 'NONE', GREY),
     rule(1, '1 ALIGNING', BLUE),
-    rule(2, '2 READY TO START', AMBER),
+    rule(2, '2 READY', AMBER),
     rule(3, '3 PRINTING', GREEN),
-    rule(4, '4 WAITING TO RETURN', AMBER),
+    rule(4, '4 WAIT RETURN', AMBER),
     rule(5, '5 RETURNING', BLUE),
 ]
 ACT_RULES = [
-    rule('armed', '/act ARMED', GREEN),
-    rule('disarmed', '/act DISARMED', RED),
+    rule('armed', 'ARMED', GREEN),
+    rule('disarmed', 'DISARMED', RED),
     rule('rc_lost', 'RC LOST', RED),
 ]
 OPERATOR_RULES = [
-    rule('none', 'No action: the robot works', GREEN),
+    rule('none', 'Robot working', GREEN),
     rule('wait', 'Wait', GREY),
-    rule('upload', 'Upload a print plan', BLUE),
-    rule('arm', 'ARM on the RC (D-pad Up)', AMBER),
-    rule('grant', 'GRANT on the RC (D-pad Right)', AMBER),
-    rule('request_arm', 'Request arm, then GRANT', AMBER),
-    rule('execute', 'Start the print (execute_plan)', BLUE),
-    rule('green_light', 'Give the GREEN LIGHT', AMBER),
-    rule('cut_done', 'Cut, then confirm CUT DONE', AMBER),
-    rule('control_lost', 'Control lost: see Why', RED),
+    rule('upload', 'Upload a plan', BLUE),
+    rule('arm', 'ARM (RC Up)', AMBER),
+    rule('grant', 'GRANT (RC Right)', AMBER),
+    rule('request_arm', 'Request arm+GRANT', AMBER),
+    rule('execute', 'Start the print', BLUE),
+    rule('green_light', 'GREEN LIGHT', AMBER),
+    rule('cut_done', 'Cut + CUT DONE', AMBER),
+    rule('control_lost', 'Control lost!', RED),
     rule('clear_error', 'Clear the error', RED),
     rule('rc', 'Switch on the RC', RED),
+]
+GRANT_RULES = [
+    rule('granted', 'MC GRANTED', GREEN),
+    rule('pending', 'WAIT GRANT', AMBER),
+    rule('partial', 'PARTIAL', AMBER),
+    rule('none', 'NOT GRANTED', GREY),
 ]
 
 band = row([
     indicator('sm_state', 'SM state', '/system_manager/state.state', SM_RULES),
     indicator('mc_state', 'MC state', '/mission_controller/state.state', MC_RULES),
     indicator('lop', 'Layer phase (LOP)', '/mission_controller/mission_state.state', LOP_RULES),
-    raw('layer', 'Layer', f'{SUMMARY}.codes.layer_text'),
+    raw('layer', 'Layer', f'{SUMMARY}.codes.layer_text', font_size=22),
     indicator('act', '/act gate', f'{SUMMARY}.codes.act_code', ACT_RULES),
     indicator('operator', 'Operator: do now', f'{SUMMARY}.codes.operator_wait', OPERATOR_RULES),
-], [13, 15, 18, 8, 12, 34])
+], [15, 16, 18, 9, 13, 29])
 
 # ---------------------------------------------------------------------------------------------
 # Tab 1: mission. The plan and the robot from above, why the states are what they are, and
@@ -205,8 +236,8 @@ band = row([
 # axes with no label.
 FRAMES = [
     'map', 'odom', 'base_link', 'left_sprocket_link', 'right_sprocket_link',
-    'lift_platform_link', 'print_head_link', 'gps_primary_link', 'gps_secondary_link',
-    'tm500_imu_link',
+    'lift_platform_link', 'print_head_link', 'printhead_tip_link', 'gps_primary_link',
+    'gps_secondary_link', 'tm500_imu_link',
 ]
 
 # A 3D panel with an orthographic camera that looks down (the "2D" mode of the panel), fixed
@@ -274,10 +305,40 @@ rotation = plot('rotation', 'Rotation rate (rad/s): commanded vs actual', [
     series(f'{ACTUAL}.angular.z', 'Actual (odometry)', GREEN, width=2),
 ], window_s=120)
 
+# Cross-track error of the print (script cross_track), below the map. Positive = the robot is
+# left of the path. The nozzle error against the distance along the print: one line per layer,
+# in its own colour. Every layer prints the same path, so the layers lie on the same x. A
+# deviation that repeats at the same place is a path or geometry issue, not a one-off. The plot
+# updates live as the robot drives. On an arc the nozzle sits ~0.36^2 / 2r outside it (6.5 mm at
+# r = 10 m) by geometry. cross_track fills layers.l1_mm .. l9_mm (MAX_LAYERS), one series each.
+LAYER_COLORS = [
+    '#e6194b', '#3cb44b', '#ffe119', '#4363d8', '#f58231', '#42d4f4',
+    '#f032e6', '#bfef45', '#fabed4',
+]
+xte_along = plot('xte_along', 'Print cross-track vs distance along print (mm): per layer', [
+    series(f'{CROSS_TRACK}.layers.l{k}_mm', f'L{k}', LAYER_COLORS[k - 1], width=2)
+    for k in range(1, len(LAYER_COLORS) + 1)
+], x_field=f'{CROSS_TRACK}.along_m', legend_display='left')
+
+# Grants: does the Mission Controller hold the drive, the lift and the vibe (ready to print).
+grant = indicator('grant', 'Actuator grants', f'{SUMMARY}.codes.grant_code', GRANT_RULES)
+# Segment progress: the bar, with the time and the distance left below it.
+seg_progress = gauge('seg_progress', 'Segment progress (%)', f'{CROSS_TRACK}.seg_percent', 0, 100)
+seg_remaining = raw('seg_remaining', 'Remaining: time, distance', f'{CROSS_TRACK}.remaining',
+                    font_size=20)
+
+# Everything for one print on tab 1, so the operator never leaves it: a tab change unmounts the
+# panels and the cross-track plot loses its points. Left: the map and the cross-track. Right:
+# grants and segment progress on top, then why and the drive plots.
 tab_mission = row([
-    mission_map,
-    column([why, linear, rotation], [30, 35, 35]),
-], [58, 42])
+    column([mission_map, xte_along], [58, 42]),
+    column([
+        row([grant, column([seg_progress, seg_remaining], [60, 40])], [38, 62]),
+        why,
+        linear,
+        rotation,
+    ], [20, 18, 31, 31]),
+], [56, 44])
 
 # ---------------------------------------------------------------------------------------------
 # Tab 2: printhead and progress.
@@ -342,7 +403,7 @@ def user_script(file_name, title):
 
 
 USER_SCRIPTS = ['mission_summary', 'phcu_commands', 'lookahead_marker', 'mission_plan',
-                'robot_pose', 'actuator_status']
+                'robot_pose', 'actuator_status', 'cross_track']
 layout = {
     'configById': config_by_id,
     'globalVariables': {},
@@ -351,7 +412,7 @@ layout = {
         for i, name in enumerate(USER_SCRIPTS)
     },
     'playbackConfig': {'speed': 1.0},
-    'layout': column([band, tabs_id], [10, 90]),
+    'layout': column([band, tabs_id], [7, 93]),
 }
 
 OUT.write_text(json.dumps(layout, indent=2) + '\n')

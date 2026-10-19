@@ -11,25 +11,25 @@
           "operator": "=",
           "rawValue": "0",
           "color": "#6b7280",
-          "label": "SM IDLE"
+          "label": "IDLE"
         },
         {
           "operator": "=",
           "rawValue": "1",
           "color": "#2563eb",
-          "label": "SM READY"
+          "label": "READY"
         },
         {
           "operator": "=",
           "rawValue": "2",
           "color": "#16a34a",
-          "label": "SM OPERATING"
+          "label": "OPERATING"
         },
         {
           "operator": "=",
           "rawValue": "3",
           "color": "#dc2626",
-          "label": "SM ERROR"
+          "label": "ERROR"
         }
       ]
     },
@@ -44,31 +44,31 @@
           "operator": "=",
           "rawValue": "0",
           "color": "#6b7280",
-          "label": "MC UNARMED"
+          "label": "UNARMED"
         },
         {
           "operator": "=",
           "rawValue": "1",
           "color": "#d97706",
-          "label": "MC PARTIALLY ARMED"
+          "label": "PART ARMED"
         },
         {
           "operator": "=",
           "rawValue": "2",
           "color": "#2563eb",
-          "label": "MC ARMED"
+          "label": "ARMED"
         },
         {
           "operator": "=",
           "rawValue": "3",
           "color": "#16a34a",
-          "label": "MC OPERATING"
+          "label": "OPERATING"
         },
         {
           "operator": "=",
           "rawValue": "4",
           "color": "#dc2626",
-          "label": "MC ERROR"
+          "label": "ERROR"
         }
       ]
     },
@@ -83,7 +83,7 @@
           "operator": "=",
           "rawValue": "0",
           "color": "#6b7280",
-          "label": "LOP NONE"
+          "label": "NONE"
         },
         {
           "operator": "=",
@@ -95,7 +95,7 @@
           "operator": "=",
           "rawValue": "2",
           "color": "#d97706",
-          "label": "2 READY TO START"
+          "label": "2 READY"
         },
         {
           "operator": "=",
@@ -107,7 +107,7 @@
           "operator": "=",
           "rawValue": "4",
           "color": "#d97706",
-          "label": "4 WAITING TO RETURN"
+          "label": "4 WAIT RETURN"
         },
         {
           "operator": "=",
@@ -125,7 +125,7 @@
       "diffTopicPath": "",
       "showFullMessageForDiff": false,
       "expansion": "all",
-      "fontSize": 13
+      "fontSize": 22
     },
     "Indicator!act": {
       "foxglovePanelTitle": "/act gate",
@@ -138,13 +138,13 @@
           "operator": "=",
           "rawValue": "armed",
           "color": "#16a34a",
-          "label": "/act ARMED"
+          "label": "ARMED"
         },
         {
           "operator": "=",
           "rawValue": "disarmed",
           "color": "#dc2626",
-          "label": "/act DISARMED"
+          "label": "DISARMED"
         },
         {
           "operator": "=",
@@ -165,7 +165,7 @@
           "operator": "=",
           "rawValue": "none",
           "color": "#16a34a",
-          "label": "No action: the robot works"
+          "label": "Robot working"
         },
         {
           "operator": "=",
@@ -177,49 +177,49 @@
           "operator": "=",
           "rawValue": "upload",
           "color": "#2563eb",
-          "label": "Upload a print plan"
+          "label": "Upload a plan"
         },
         {
           "operator": "=",
           "rawValue": "arm",
           "color": "#d97706",
-          "label": "ARM on the RC (D-pad Up)"
+          "label": "ARM (RC Up)"
         },
         {
           "operator": "=",
           "rawValue": "grant",
           "color": "#d97706",
-          "label": "GRANT on the RC (D-pad Right)"
+          "label": "GRANT (RC Right)"
         },
         {
           "operator": "=",
           "rawValue": "request_arm",
           "color": "#d97706",
-          "label": "Request arm, then GRANT"
+          "label": "Request arm+GRANT"
         },
         {
           "operator": "=",
           "rawValue": "execute",
           "color": "#2563eb",
-          "label": "Start the print (execute_plan)"
+          "label": "Start the print"
         },
         {
           "operator": "=",
           "rawValue": "green_light",
           "color": "#d97706",
-          "label": "Give the GREEN LIGHT"
+          "label": "GREEN LIGHT"
         },
         {
           "operator": "=",
           "rawValue": "cut_done",
           "color": "#d97706",
-          "label": "Cut, then confirm CUT DONE"
+          "label": "Cut + CUT DONE"
         },
         {
           "operator": "=",
           "rawValue": "control_lost",
           "color": "#dc2626",
-          "label": "Control lost: see Why"
+          "label": "Control lost!"
         },
         {
           "operator": "=",
@@ -292,6 +292,9 @@
           "visible": false
         },
         "frame:print_head_link": {
+          "visible": false
+        },
+        "frame:printhead_tip_link": {
           "visible": false
         },
         "frame:gps_primary_link": {
@@ -400,9 +403,9 @@
       "showXAxisLabels": true,
       "showYAxisLabels": true,
       "isSynced": true,
+      "sidebarDimension": 240,
       "xAxisVal": "timestamp",
-      "followingViewWidth": 120,
-      "sidebarDimension": 240
+      "followingViewWidth": 120
     },
     "Plot!rotation": {
       "foxglovePanelTitle": "Rotation rate (rad/s): commanded vs actual",
@@ -437,9 +440,153 @@
       "showXAxisLabels": true,
       "showYAxisLabels": true,
       "isSynced": true,
+      "sidebarDimension": 240,
       "xAxisVal": "timestamp",
-      "followingViewWidth": 120,
-      "sidebarDimension": 240
+      "followingViewWidth": 120
+    },
+    "Plot!xte_along": {
+      "foxglovePanelTitle": "Print cross-track vs distance along print (mm): per layer",
+      "paths": [
+        {
+          "value": "/studio_script/cross_track.layers.l1_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L1",
+          "color": "#e6194b",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l2_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L2",
+          "color": "#3cb44b",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l3_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L3",
+          "color": "#ffe119",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l4_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L4",
+          "color": "#4363d8",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l5_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L5",
+          "color": "#f58231",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l6_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L6",
+          "color": "#42d4f4",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l7_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L7",
+          "color": "#f032e6",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l8_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L8",
+          "color": "#bfef45",
+          "lineSize": 2
+        },
+        {
+          "value": "/studio_script/cross_track.layers.l9_mm",
+          "enabled": true,
+          "timestampMethod": "receiveTime",
+          "label": "L9",
+          "color": "#fabed4",
+          "lineSize": 2
+        }
+      ],
+      "showLegend": true,
+      "legendDisplay": "left",
+      "showPlotValuesInLegend": true,
+      "showXAxisLabels": true,
+      "showYAxisLabels": true,
+      "isSynced": false,
+      "sidebarDimension": 240,
+      "xAxisVal": "custom",
+      "xAxisPath": {
+        "value": "/studio_script/cross_track.along_m",
+        "enabled": true
+      }
+    },
+    "Indicator!grant": {
+      "foxglovePanelTitle": "Actuator grants",
+      "path": "/studio_script/mission_summary.codes.grant_code",
+      "style": "background",
+      "fallbackColor": "#6b7280",
+      "fallbackLabel": "no data",
+      "rules": [
+        {
+          "operator": "=",
+          "rawValue": "granted",
+          "color": "#16a34a",
+          "label": "MC GRANTED"
+        },
+        {
+          "operator": "=",
+          "rawValue": "pending",
+          "color": "#d97706",
+          "label": "WAIT GRANT"
+        },
+        {
+          "operator": "=",
+          "rawValue": "partial",
+          "color": "#d97706",
+          "label": "PARTIAL"
+        },
+        {
+          "operator": "=",
+          "rawValue": "none",
+          "color": "#6b7280",
+          "label": "NOT GRANTED"
+        }
+      ]
+    },
+    "Gauge!seg_progress": {
+      "foxglovePanelTitle": "Segment progress (%)",
+      "path": "/studio_script/cross_track.seg_percent",
+      "minValue": 0,
+      "maxValue": 100,
+      "colorMode": "gradient",
+      "gradient": [
+        "#dc2626",
+        "#16a34a"
+      ],
+      "reverse": false
+    },
+    "RawMessages!seg_remaining": {
+      "foxglovePanelTitle": "Remaining: time, distance",
+      "topicPath": "/studio_script/cross_track.remaining",
+      "diffEnabled": false,
+      "diffMethod": "custom",
+      "diffTopicPath": "",
+      "showFullMessageForDiff": false,
+      "expansion": "all",
+      "fontSize": 20
     },
     "Plot!lift": {
       "foxglovePanelTitle": "Lift height (mm): target vs actual",
@@ -467,9 +614,9 @@
       "showXAxisLabels": true,
       "showYAxisLabels": true,
       "isSynced": true,
+      "sidebarDimension": 240,
       "xAxisVal": "timestamp",
-      "followingViewWidth": 300,
-      "sidebarDimension": 240
+      "followingViewWidth": 300
     },
     "Plot!vibe": {
       "foxglovePanelTitle": "Vibe frequency (Hz): commanded vs actual",
@@ -504,9 +651,9 @@
       "showXAxisLabels": true,
       "showYAxisLabels": true,
       "isSynced": true,
+      "sidebarDimension": 240,
       "xAxisVal": "timestamp",
       "followingViewWidth": 300,
-      "sidebarDimension": 240,
       "minYValue": 0
     },
     "Table!actuators": {
@@ -531,9 +678,9 @@
       "showXAxisLabels": true,
       "showYAxisLabels": true,
       "isSynced": true,
+      "sidebarDimension": 240,
       "xAxisVal": "timestamp",
       "followingViewWidth": 1800,
-      "sidebarDimension": 240,
       "minYValue": 0,
       "maxYValue": 100
     },
@@ -640,19 +787,39 @@
           "title": "1 Mission",
           "layout": {
             "direction": "row",
-            "first": "3D!mission_map",
+            "first": {
+              "direction": "column",
+              "first": "3D!mission_map",
+              "second": "Plot!xte_along",
+              "splitPercentage": 58.0
+            },
             "second": {
               "direction": "column",
-              "first": "RawMessages!why",
+              "first": {
+                "direction": "row",
+                "first": "Indicator!grant",
+                "second": {
+                  "direction": "column",
+                  "first": "Gauge!seg_progress",
+                  "second": "RawMessages!seg_remaining",
+                  "splitPercentage": 60.0
+                },
+                "splitPercentage": 38.0
+              },
               "second": {
                 "direction": "column",
-                "first": "Plot!linear",
-                "second": "Plot!rotation",
-                "splitPercentage": 50.0
+                "first": "RawMessages!why",
+                "second": {
+                  "direction": "column",
+                  "first": "Plot!linear",
+                  "second": "Plot!rotation",
+                  "splitPercentage": 50.0
+                },
+                "splitPercentage": 22.5
               },
-              "splitPercentage": 30.0
+              "splitPercentage": 20.0
             },
-            "splitPercentage": 58.0
+            "splitPercentage": 56.0
           }
         },
         {
@@ -690,7 +857,7 @@
   "userNodes": {
     "b6f1c2a0-0001-4d6e-9a51-print0mission": {
       "name": "mission_summary",
-      "sourceCode": "// Mission summary for the print_mission layout.\n//\n// Reads the System Manager (SM) state, the Mission Controller (MC) controller and mission\n// states, and the /act arbiter status. Publishes one message: the action that the operator\n// must do now, the reason for each state, the plan and the last holder change.\n//\n// The band tiles show the states, from the fields of \"codes\" and from the state topics. The\n// \"Why\" panel shows the fields of \"why\": the text that the tiles cannot show.\n//\n// Source: scripts/mission_summary.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/system_manager/state\",\n  \"/mission_controller/state\",\n  \"/mission_controller/mission_state\",\n  \"/act/status\",\n];\nexport const output = \"/studio_script/mission_summary\";\n\ntype Why = {\n  // What the operator must do now, in words.\n  do_now: string;\n  // The reason for the state, for example \"Plan ... loaded, waiting for ...\". The state name\n  // is in the band.\n  sm_reason: string;\n  mc_reason: string;\n  plan: string;\n  // Why the actuators changed holder last, for example \"drive GRANTED, lift GRANTED, ...\".\n  last_change: string;\n};\n\ntype Codes = {\n  // Short code for the \"Operator\" tile: none, wait, upload, arm, grant, request_arm,\n  // execute, green_light, cut_done, control_lost, clear_error, rc.\n  operator_wait: string;\n  // Short code for the \"/act\" tile: armed, disarmed, rc_lost.\n  act_code: string;\n  // Text for the \"Layer\" tile, for example \"2 / 3\".\n  layer_text: string;\n};\n\ntype Output = {\n  why: Why;\n  codes: Codes;\n};\n\ntype Event =\n  | Input<\"/system_manager/state\">\n  | Input<\"/mission_controller/state\">\n  | Input<\"/mission_controller/mission_state\">\n  | Input<\"/act/status\">;\n\ntype SmState = Input<\"/system_manager/state\">[\"message\"];\ntype McState = Input<\"/mission_controller/state\">[\"message\"];\ntype MissionState = Input<\"/mission_controller/mission_state\">[\"message\"];\ntype ActStatus = Input<\"/act/status\">[\"message\"];\n\n// Constants of etk_actuation_interfaces/msg/ActuatorStatus (change_reason).\nconst CHANGE_NAMES = [\"NONE\", \"TAKEN\", \"RELEASED\", \"REVOKED\", \"DISARMED\", \"GRANTED\"];\n\nconst SM_IDLE = 0;\nconst SM_READY = 1;\nconst SM_OPERATING = 2;\nconst SM_ERROR = 3;\nconst MC_ARMED = 2;\nconst MC_OPERATING = 3;\nconst LOP_ALIGNING = 1;\nconst LOP_READY_TO_START = 2;\nconst LOP_PRINTING = 3;\nconst LOP_WAITING_TO_RETURN = 4;\nconst LOP_RETURNING = 5;\n// etk_actuation_interfaces/msg/Priority\nconst LEVEL_MC = 50;\n\nconst NO_DATA = \"(no data)\";\n\n// The last message of each input. The script runs once for each input message.\nlet sm: SmState | undefined;\nlet mc: McState | undefined;\nlet mission: MissionState | undefined;\nlet act: ActStatus | undefined;\n\nfunction name(names: string[], value: number | undefined): string {\n  if (value === undefined) {\n    return NO_DATA;\n  }\n  return names[value] ?? `UNKNOWN (${value})`;\n}\n\n// The reason, \"(none)\" when it is empty.\nfunction reason(text: string | undefined): string {\n  if (text === undefined) {\n    return NO_DATA;\n  }\n  return text !== \"\" ? text : \"(none)\";\n}\n\nfunction lastChange(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  return [\n    `drive ${name(CHANGE_NAMES, status.drive.change_reason)}`,\n    `lift ${name(CHANGE_NAMES, status.lift.change_reason)}`,\n    `vibe ${name(CHANGE_NAMES, status.vibe.change_reason)}`,\n  ].join(\", \");\n}\n\nfunction mcRequestsPending(status: ActStatus): boolean {\n  return [status.drive, status.lift, status.vibe].some((s) => s.requested_level === LEVEL_MC);\n}\n\n// [code, text]: what the operator must do now.\nfunction operatorAction(): [string, string] {\n  if (sm === undefined || act === undefined) {\n    return [\"wait\", \"Wait for /system_manager/state and /act/status.\"];\n  }\n  if (!act.rc_present) {\n    return [\"rc\", \"Switch on the RC. The arbiter gets no deadman, so /act is DISARMED.\"];\n  }\n  if (sm.state === SM_ERROR) {\n    return [\"clear_error\", \"Read the SM reason. Fix the cause. Then call /system_manager/clear_error_request.\"];\n  }\n  if (sm.state === SM_IDLE) {\n    if (sm.current_plan_id === \"\") {\n      return [\"upload\", \"Upload a print plan: /system_manager/upload_print_plan (GUI or CLI).\"];\n    }\n    if (!act.armed) {\n      return [\"arm\", \"ARM the /act layer on the RC: hold D-pad Up.\"];\n    }\n    if (mcRequestsPending(act)) {\n      return [\"grant\", \"Press GRANT on the RC (D-pad Right). The MC asks for the drive, the lift and the vibe.\"];\n    }\n    if (mc !== undefined && mc.state !== MC_ARMED) {\n      return [\"request_arm\", \"The MC does not hold all three actuators. Call /system_manager/request_arm, then press GRANT.\"];\n    }\n    return [\"wait\", \"Wait. The SM goes to READY at the next MC state message.\"];\n  }\n  if (sm.state === SM_READY) {\n    return [\"execute\", \"Start the print: send a goal to the /system_manager/execute_plan action.\"];\n  }\n  if (sm.state === SM_OPERATING) {\n    if (mc !== undefined && mc.state === MC_OPERATING && mc.message !== \"\") {\n      return [\n        \"control_lost\",\n        `The MC reports \"${mc.message}\". The print continues or fails. To get control back: /system_manager/request_arm, then GRANT.`,\n      ];\n    }\n    switch (mission?.state) {\n      case LOP_ALIGNING:\n        return [\"none\", \"No action. The lift goes to the alignment height, then the robot drives to the layer start.\"];\n      case LOP_READY_TO_START:\n        return [\"green_light\", \"Check the robot at the layer start. Then give the green light: /system_manager/start_layer.\"];\n      case LOP_PRINTING:\n        return [\"none\", \"No action. The lift goes to the print height, then the robot prints the layer.\"];\n      case LOP_WAITING_TO_RETURN:\n        return [\"cut_done\", \"Cut the wall end. Then confirm: /system_manager/cut_done.\"];\n      case LOP_RETURNING:\n        return [\"none\", \"No action. The robot drives the return segment.\"];\n      default:\n        return [\"wait\", \"Wait for the MC mission state.\"];\n    }\n  }\n  return [\"wait\", `Unknown SM state ${sm.state}.`];\n}\n\nfunction actCode(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return \"\";\n  }\n  if (!status.rc_present) {\n    return \"rc_lost\";\n  }\n  return status.armed ? \"armed\" : \"disarmed\";\n}\n\nexport default function script(event: Event): Output {\n  switch (event.topic) {\n    case \"/system_manager/state\":\n      sm = event.message;\n      break;\n    case \"/mission_controller/state\":\n      mc = event.message;\n      break;\n    case \"/mission_controller/mission_state\":\n      mission = event.message;\n      break;\n    case \"/act/status\":\n      act = event.message;\n      break;\n  }\n\n  const [code, text] = operatorAction();\n\n  let layerText = \"-\";\n  if (mission !== undefined && mission.total_layers > 0) {\n    layerText = `${mission.current_layer} / ${mission.total_layers}`;\n  }\n  let plan = NO_DATA;\n  if (sm !== undefined) {\n    plan = sm.current_plan_id !== \"\" ? sm.current_plan_id : \"(none)\";\n  }\n\n  return {\n    why: {\n      do_now: text,\n      sm_reason: reason(sm?.message),\n      mc_reason: reason(mc?.message),\n      plan,\n      last_change: lastChange(act),\n    },\n    codes: {\n      operator_wait: code,\n      act_code: actCode(act),\n      layer_text: layerText,\n    },\n  };\n}\n"
+      "sourceCode": "// Mission summary for the print_mission layout.\n//\n// Reads the System Manager (SM) state, the Mission Controller (MC) controller and mission\n// states, and the /act arbiter status. Publishes one message: the action that the operator\n// must do now, the reason for each state, the plan and the last holder change.\n//\n// The band tiles show the states, from the fields of \"codes\" and from the state topics. The\n// \"Why\" panel shows the fields of \"why\": the text that the tiles cannot show.\n//\n// Source: scripts/mission_summary.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/system_manager/state\",\n  \"/mission_controller/state\",\n  \"/mission_controller/mission_state\",\n  \"/act/status\",\n];\nexport const output = \"/studio_script/mission_summary\";\n\ntype Why = {\n  // What the operator must do now, in words.\n  do_now: string;\n  // The reason for the state, for example \"Plan ... loaded, waiting for ...\". The state name\n  // is in the band.\n  sm_reason: string;\n  mc_reason: string;\n  plan: string;\n  // Why the actuators changed holder last, for example \"drive GRANTED, lift GRANTED, ...\".\n  last_change: string;\n};\n\ntype Codes = {\n  // Short code for the \"Operator\" tile: none, wait, upload, arm, grant, request_arm,\n  // execute, green_light, cut_done, control_lost, clear_error, rc.\n  operator_wait: string;\n  // Short code for the \"/act\" tile: armed, disarmed, rc_lost.\n  act_code: string;\n  // Text for the \"Layer\" tile, for example \"2 / 3\".\n  layer_text: string;\n  // Short code for the \"Actuator grants\" tile: granted (MC holds all three), pending (a GRANT\n  // is waited for), partial (MC holds some, none pending), none (the RC holds them).\n  grant_code: string;\n};\n\ntype Output = {\n  why: Why;\n  codes: Codes;\n};\n\ntype Event =\n  | Input<\"/system_manager/state\">\n  | Input<\"/mission_controller/state\">\n  | Input<\"/mission_controller/mission_state\">\n  | Input<\"/act/status\">;\n\ntype SmState = Input<\"/system_manager/state\">[\"message\"];\ntype McState = Input<\"/mission_controller/state\">[\"message\"];\ntype MissionState = Input<\"/mission_controller/mission_state\">[\"message\"];\ntype ActStatus = Input<\"/act/status\">[\"message\"];\n\n// Constants of etk_actuation_interfaces/msg/ActuatorStatus (change_reason).\nconst CHANGE_NAMES = [\"NONE\", \"TAKEN\", \"RELEASED\", \"REVOKED\", \"DISARMED\", \"GRANTED\"];\n\nconst SM_IDLE = 0;\nconst SM_READY = 1;\nconst SM_OPERATING = 2;\nconst SM_ERROR = 3;\nconst MC_ARMED = 2;\nconst MC_OPERATING = 3;\nconst LOP_ALIGNING = 1;\nconst LOP_READY_TO_START = 2;\nconst LOP_PRINTING = 3;\nconst LOP_WAITING_TO_RETURN = 4;\nconst LOP_RETURNING = 5;\n// etk_actuation_interfaces/msg/Priority\nconst LEVEL_MC = 50;\n\nconst NO_DATA = \"(no data)\";\n\n// The last message of each input. The script runs once for each input message.\nlet sm: SmState | undefined;\nlet mc: McState | undefined;\nlet mission: MissionState | undefined;\nlet act: ActStatus | undefined;\n\nfunction name(names: string[], value: number | undefined): string {\n  if (value === undefined) {\n    return NO_DATA;\n  }\n  return names[value] ?? `UNKNOWN (${value})`;\n}\n\n// The reason, \"(none)\" when it is empty.\nfunction reason(text: string | undefined): string {\n  if (text === undefined) {\n    return NO_DATA;\n  }\n  return text !== \"\" ? text : \"(none)\";\n}\n\nfunction lastChange(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  return [\n    `drive ${name(CHANGE_NAMES, status.drive.change_reason)}`,\n    `lift ${name(CHANGE_NAMES, status.lift.change_reason)}`,\n    `vibe ${name(CHANGE_NAMES, status.vibe.change_reason)}`,\n  ].join(\", \");\n}\n\nfunction mcRequestsPending(status: ActStatus): boolean {\n  return [status.drive, status.lift, status.vibe].some((s) => s.requested_level === LEVEL_MC);\n}\n\n// [code, text]: what the operator must do now.\nfunction operatorAction(): [string, string] {\n  if (sm === undefined || act === undefined) {\n    return [\"wait\", \"Wait for /system_manager/state and /act/status.\"];\n  }\n  if (!act.rc_present) {\n    return [\"rc\", \"Switch on the RC. The arbiter gets no deadman, so /act is DISARMED.\"];\n  }\n  if (sm.state === SM_ERROR) {\n    return [\"clear_error\", \"Read the SM reason. Fix the cause. Then call /system_manager/clear_error_request.\"];\n  }\n  if (sm.state === SM_IDLE) {\n    if (sm.current_plan_id === \"\") {\n      return [\"upload\", \"Upload a print plan: /system_manager/upload_print_plan (GUI or CLI).\"];\n    }\n    if (!act.armed) {\n      return [\"arm\", \"ARM the /act layer on the RC: hold D-pad Up.\"];\n    }\n    if (mcRequestsPending(act)) {\n      return [\"grant\", \"Press GRANT on the RC (D-pad Right). The MC asks for the drive, the lift and the vibe.\"];\n    }\n    if (mc !== undefined && mc.state !== MC_ARMED) {\n      return [\"request_arm\", \"The MC does not hold all three actuators. Call /system_manager/request_arm, then press GRANT.\"];\n    }\n    return [\"wait\", \"Wait. The SM goes to READY at the next MC state message.\"];\n  }\n  if (sm.state === SM_READY) {\n    return [\"execute\", \"Start the print: send a goal to the /system_manager/execute_plan action.\"];\n  }\n  if (sm.state === SM_OPERATING) {\n    if (mc !== undefined && mc.state === MC_OPERATING && mc.message !== \"\") {\n      return [\n        \"control_lost\",\n        `The MC reports \"${mc.message}\". The print continues or fails. To get control back: /system_manager/request_arm, then GRANT.`,\n      ];\n    }\n    switch (mission?.state) {\n      case LOP_ALIGNING:\n        return [\"none\", \"No action. The lift goes to the alignment height, then the robot drives to the layer start.\"];\n      case LOP_READY_TO_START:\n        return [\"green_light\", \"Check the robot at the layer start. Then give the green light: /system_manager/start_layer.\"];\n      case LOP_PRINTING:\n        return [\"none\", \"No action. The lift goes to the print height, then the robot prints the layer.\"];\n      case LOP_WAITING_TO_RETURN:\n        return [\"cut_done\", \"Cut the wall end. Then confirm: /system_manager/cut_done.\"];\n      case LOP_RETURNING:\n        return [\"none\", \"No action. The robot drives the return segment.\"];\n      default:\n        return [\"wait\", \"Wait for the MC mission state.\"];\n    }\n  }\n  return [\"wait\", `Unknown SM state ${sm.state}.`];\n}\n\nfunction actCode(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return \"\";\n  }\n  if (!status.rc_present) {\n    return \"rc_lost\";\n  }\n  return status.armed ? \"armed\" : \"disarmed\";\n}\n\nfunction grantCode(status: ActStatus | undefined): string {\n  if (status === undefined) {\n    return \"\";\n  }\n  const acts = [status.drive, status.lift, status.vibe];\n  const held = acts.filter((a) => a.level === LEVEL_MC).length;\n  const pending = acts.some((a) => a.requested_level === LEVEL_MC);\n  if (held === 3) {\n    return \"granted\";\n  }\n  if (pending) {\n    return \"pending\";\n  }\n  return held > 0 ? \"partial\" : \"none\";\n}\n\nexport default function script(event: Event): Output {\n  switch (event.topic) {\n    case \"/system_manager/state\":\n      sm = event.message;\n      break;\n    case \"/mission_controller/state\":\n      mc = event.message;\n      break;\n    case \"/mission_controller/mission_state\":\n      mission = event.message;\n      break;\n    case \"/act/status\":\n      act = event.message;\n      break;\n  }\n\n  const [code, text] = operatorAction();\n\n  let layerText = \"-\";\n  if (mission !== undefined && mission.total_layers > 0) {\n    layerText = `${mission.current_layer} / ${mission.total_layers}`;\n  }\n  let plan = NO_DATA;\n  if (sm !== undefined) {\n    plan = sm.current_plan_id !== \"\" ? sm.current_plan_id : \"(none)\";\n  }\n\n  return {\n    why: {\n      do_now: text,\n      sm_reason: reason(sm?.message),\n      mc_reason: reason(mc?.message),\n      plan,\n      last_change: lastChange(act),\n    },\n    codes: {\n      operator_wait: code,\n      act_code: actCode(act),\n      layer_text: layerText,\n      grant_code: grantCode(act),\n    },\n  };\n}\n"
     },
     "b6f1c2a0-0002-4d6e-9a51-print0mission": {
       "name": "phcu_commands",
@@ -706,11 +873,15 @@
     },
     "b6f1c2a0-0005-4d6e-9a51-print0mission": {
       "name": "robot_pose",
-      "sourceCode": "// Robot pose and driven trail in the map, for the print_mission layout.\n//\n// Robot: a triangle in base_link that points forward (+x). The entity is \"frame locked\" in\n// base_link, so the 3D panel puts it at the latest TF pose of base_link in the map. The panel\n// reads the TF itself.\n//\n// Trail: the path that the robot drove, in map. The script composes the two TF links\n// map -> odom and odom -> base_link of /tf and /tf_static:\n//\n//   robot    map -> odom comes from ekf_global (GPS) on /tf and moves; odom -> base_link\n//            comes from ekf_local on /tf\n//   mock     map -> odom is a static identity on /tf_static; odom -> base_link comes from\n//            ekf_local on /tf\n//\n// Thus the trail shows the map pose, also when the GPS corrects map -> odom. A /odometry/local\n// trail would show the odom pose only. The script adds a point when the robot moved 2 cm or\n// more, and keeps the last 5000 points. A new plan on /system_manager/loaded_plan starts a new\n// trail.\n//\n// Source: scripts/robot_pose.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneEntity, SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/tf\", \"/tf_static\", \"/system_manager/loaded_plan\"];\nexport const output = \"/studio_script/robot_pose\";\n\ntype Event = Input<\"/tf\"> | Input<\"/tf_static\"> | Input<\"/system_manager/loaded_plan\">;\ntype Time = Input<\"/tf\">[\"receiveTime\"];\ntype Vec = { x: number; y: number; z: number };\ntype Quat = { x: number; y: number; z: number; w: number };\ntype Pose = { t: Vec; q: Quat };\n\nconst MAP = \"map\";\nconst ODOM = \"odom\";\nconst BASE = \"base_link\";\nconst MIN_STEP_M = 0.02;\nconst MAX_POINTS = 5000;\n// Send the robot entity again after this time, also when the robot does not move: a panel\n// that opens later (for example after a tab change) then shows it.\nconst RESEND_S = 1.0;\n// Triangle: 0.9 m long, 0.6 m wide, base_link at 1/3 of the length from the back.\nconst NOSE_M = 0.6;\nconst TAIL_M = 0.3;\nconst HALF_WIDTH_M = 0.3;\nconst ROBOT_COLOR = { r: 0.98, g: 0.8, b: 0.08, a: 0.9 };\nconst TRAIL_COLOR = { r: 0.95, g: 0.95, b: 0.95, a: 0.8 };\nconst IDENTITY = { x: 0, y: 0, z: 0, w: 1 };\n\nlet mapOdom: Pose | undefined;\nlet odomBase: Pose | undefined;\nlet planUuid = \"\";\nconst trail: Vec[] = [];\nlet lastSent = -Infinity;\n\nfunction seconds(t: Time): number {\n  return t.sec + t.nsec * 1e-9;\n}\n\nfunction frame(id: string): string {\n  return id.startsWith(\"/\") ? id.slice(1) : id;\n}\n\nfunction multiply(a: Quat, b: Quat): Quat {\n  return {\n    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,\n    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,\n    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,\n    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,\n  };\n}\n\nfunction rotate(q: Quat, v: Vec): Vec {\n  // v' = q v q*\n  const p = multiply(multiply(q, { x: v.x, y: v.y, z: v.z, w: 0 }), { x: -q.x, y: -q.y, z: -q.z, w: q.w });\n  return { x: p.x, y: p.y, z: p.z };\n}\n\n// a then b: the pose of b's child in a's parent frame.\nfunction compose(a: Pose, b: Pose): Pose {\n  const r = rotate(a.q, b.t);\n  return { t: { x: a.t.x + r.x, y: a.t.y + r.y, z: a.t.z + r.z }, q: multiply(a.q, b.q) };\n}\n\nfunction readTransforms(message: Input<\"/tf\">[\"message\"]): void {\n  for (const tf of message.transforms) {\n    const parent = frame(tf.header.frame_id);\n    const child = frame(tf.child_frame_id);\n    const pose = { t: tf.transform.translation, q: tf.transform.rotation };\n    if (parent === MAP && child === ODOM) {\n      mapOdom = pose;\n    } else if (parent === ODOM && child === BASE) {\n      odomBase = pose;\n    }\n  }\n}\n\nfunction emptyEntity(time: Time, frameId: string, id: string): SceneEntity {\n  return {\n    timestamp: time,\n    frame_id: frameId,\n    id,\n    lifetime: { sec: 0, nsec: 0 },\n    frame_locked: true,\n    metadata: [],\n    arrows: [],\n    cubes: [],\n    spheres: [],\n    cylinders: [],\n    lines: [],\n    triangles: [],\n    texts: [],\n    models: [],\n  };\n}\n\nfunction robotEntity(time: Time): SceneEntity {\n  const e = emptyEntity(time, BASE, \"robot\");\n  const z = 0.2; // above the plan lines and the trail\n  const outline = [\n    { x: NOSE_M, y: 0, z },\n    { x: -TAIL_M, y: HALF_WIDTH_M, z },\n    { x: -TAIL_M, y: -HALF_WIDTH_M, z },\n  ];\n  e.triangles.push({\n    pose: { position: { x: 0, y: 0, z: 0 }, orientation: IDENTITY },\n    points: outline,\n    color: ROBOT_COLOR,\n    colors: [],\n    indices: [],\n  });\n  e.lines.push({\n    type: 1, // LINE_LOOP\n    pose: { position: { x: 0, y: 0, z: 0.01 }, orientation: IDENTITY },\n    thickness: 2,\n    scale_invariant: true,\n    points: outline,\n    color: { r: 0.1, g: 0.1, b: 0.1, a: 1.0 },\n    colors: [],\n    indices: [],\n  });\n  return e;\n}\n\nfunction trailEntity(time: Time): SceneEntity {\n  const e = emptyEntity(time, MAP, \"trail\");\n  if (trail.length >= 2) {\n    e.lines.push({\n      type: 0, // LINE_STRIP\n      pose: { position: { x: 0, y: 0, z: 0 }, orientation: IDENTITY },\n      thickness: 2,\n      scale_invariant: true,\n      points: trail.slice(),\n      color: TRAIL_COLOR,\n      colors: [],\n      indices: [],\n    });\n  }\n  return e;\n}\n\n// true when the trail got a new point.\nfunction addTrailPoint(): boolean {\n  if (mapOdom === undefined || odomBase === undefined) {\n    return false;\n  }\n  const p = compose(mapOdom, odomBase).t;\n  const last = trail[trail.length - 1];\n  if (last !== undefined && Math.hypot(p.x - last.x, p.y - last.y) < MIN_STEP_M) {\n    return false;\n  }\n  trail.push({ x: p.x, y: p.y, z: 0.05 });\n  if (trail.length > MAX_POINTS) {\n    trail.shift();\n  }\n  return true;\n}\n\nexport default function script(event: Event): SceneUpdate | undefined {\n  let changed = false;\n  switch (event.topic) {\n    case \"/tf\":\n    case \"/tf_static\":\n      readTransforms(event.message);\n      changed = addTrailPoint();\n      break;\n    case \"/system_manager/loaded_plan\":\n      if (event.message.plan_uuid !== \"\" && event.message.plan_uuid !== planUuid) {\n        trail.length = 0;\n        changed = true;\n      }\n      planUuid = event.message.plan_uuid;\n      break;\n  }\n  const now = seconds(event.receiveTime);\n  if (!changed && now - lastSent < RESEND_S) {\n    return undefined;\n  }\n  lastSent = now;\n  return {\n    deletions: [],\n    entities: [robotEntity(event.receiveTime), trailEntity(event.receiveTime)],\n  };\n}\n"
+      "sourceCode": "// Robot pose and driven trail in the map, for the print_mission layout.\n//\n// Robot: the footprint of the tracked robot, drawn in base_link, pointing forward (+x). The\n// entity is \"frame locked\" in base_link, so the 3D panel puts it at the latest TF pose of\n// base_link in the map. The panel reads the TF itself. The body is transparent so the plan and\n// the trail stay visible through it, and a crosshair marks base_link at the center of the frame\n// (where the pose is published).\n//\n// Trail: the path that the robot drove, in map. The script composes the two TF links\n// map -> odom and odom -> base_link of /tf and /tf_static:\n//\n//   robot    map -> odom comes from ekf_global (GPS) on /tf and moves; odom -> base_link\n//            comes from ekf_local on /tf\n//   mock     map -> odom is a static identity on /tf_static; odom -> base_link comes from\n//            ekf_local on /tf\n//\n// Thus the trail shows the map pose, also when the GPS corrects map -> odom. A /odometry/local\n// trail would show the odom pose only. The script adds a point when the robot moved 2 cm or\n// more, and keeps the last 5000 points. A new plan on /system_manager/loaded_plan starts a new\n// trail.\n//\n// Source: scripts/robot_pose.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\nimport { SceneEntity, SceneUpdate } from \"@foxglove/schemas\";\n\nexport const inputs = [\"/tf\", \"/tf_static\", \"/system_manager/loaded_plan\"];\nexport const output = \"/studio_script/robot_pose\";\n\ntype Event = Input<\"/tf\"> | Input<\"/tf_static\"> | Input<\"/system_manager/loaded_plan\">;\ntype Time = Input<\"/tf\">[\"receiveTime\"];\ntype Vec = { x: number; y: number; z: number };\ntype Quat = { x: number; y: number; z: number; w: number };\ntype Pose = { t: Vec; q: Quat };\n\nconst MAP = \"map\";\nconst ODOM = \"odom\";\nconst BASE = \"base_link\";\nconst MIN_STEP_M = 0.02;\nconst MAX_POINTS = 5000;\n// Send the robot entity again after this time, also when the robot does not move: a panel\n// that opens later (for example after a tab change) then shows it.\nconst RESEND_S = 1.0;\n// Footprint of the tracked robot. base_link is at the center of the frame (pose is published\n// there): the footprint is centered on it. 0.90 m long; chassis 0.90 m wide; 1.20 m wide\n// including the tracks, so each track band is 0.15 m wide.\nconst LENGTH_M = 0.9;\nconst CHASSIS_WIDTH_M = 0.9;\nconst TOTAL_WIDTH_M = 1.2;\nconst TRACK_WIDTH_M = (TOTAL_WIDTH_M - CHASSIS_WIDTH_M) / 2; // 0.15 per side\nconst TRACK_CENTER_Y = (CHASSIS_WIDTH_M + TOTAL_WIDTH_M) / 4; // 0.525: middle of a track band\n// Transparent body so the plan and the trail show through; solid outline for the extents.\nconst BODY_COLOR = { r: 0.98, g: 0.8, b: 0.08, a: 0.22 };\nconst TRACK_COLOR = { r: 0.15, g: 0.16, b: 0.2, a: 0.6 };\nconst OUTLINE_COLOR = { r: 0.98, g: 0.8, b: 0.08, a: 0.95 };\nconst HEADING_COLOR = { r: 0.98, g: 0.8, b: 0.08, a: 0.9 };\nconst CENTER_COLOR = { r: 1.0, g: 1.0, b: 1.0, a: 1.0 };\nconst CENTER_DOT_COLOR = { r: 0.9, g: 0.1, b: 0.1, a: 1.0 };\n// Nozzle (printhead tip): 0.36 m behind base_link in the plane (printhead_tip_joint). Its z\n// changes with the lift, which does not matter from above. Marked in cyan so the print point\n// is visible, not only the center of the robot.\nconst NOZZLE_X = -0.36;\nconst NOZZLE_COLOR = { r: 0.1, g: 0.85, b: 0.95, a: 1.0 };\nconst TRAIL_COLOR = { r: 0.95, g: 0.95, b: 0.95, a: 0.8 };\nconst IDENTITY = { x: 0, y: 0, z: 0, w: 1 };\n\nlet mapOdom: Pose | undefined;\nlet odomBase: Pose | undefined;\nlet planUuid = \"\";\nconst trail: Vec[] = [];\nlet lastSent = -Infinity;\n\nfunction seconds(t: Time): number {\n  return t.sec + t.nsec * 1e-9;\n}\n\nfunction frame(id: string): string {\n  return id.startsWith(\"/\") ? id.slice(1) : id;\n}\n\nfunction multiply(a: Quat, b: Quat): Quat {\n  return {\n    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,\n    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,\n    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,\n    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,\n  };\n}\n\nfunction rotate(q: Quat, v: Vec): Vec {\n  // v' = q v q*\n  const p = multiply(multiply(q, { x: v.x, y: v.y, z: v.z, w: 0 }), { x: -q.x, y: -q.y, z: -q.z, w: q.w });\n  return { x: p.x, y: p.y, z: p.z };\n}\n\n// a then b: the pose of b's child in a's parent frame.\nfunction compose(a: Pose, b: Pose): Pose {\n  const r = rotate(a.q, b.t);\n  return { t: { x: a.t.x + r.x, y: a.t.y + r.y, z: a.t.z + r.z }, q: multiply(a.q, b.q) };\n}\n\nfunction readTransforms(message: Input<\"/tf\">[\"message\"]): void {\n  for (const tf of message.transforms) {\n    const parent = frame(tf.header.frame_id);\n    const child = frame(tf.child_frame_id);\n    const pose = { t: tf.transform.translation, q: tf.transform.rotation };\n    if (parent === MAP && child === ODOM) {\n      mapOdom = pose;\n    } else if (parent === ODOM && child === BASE) {\n      odomBase = pose;\n    }\n  }\n}\n\nfunction emptyEntity(time: Time, frameId: string, id: string): SceneEntity {\n  return {\n    timestamp: time,\n    frame_id: frameId,\n    id,\n    lifetime: { sec: 0, nsec: 0 },\n    frame_locked: true,\n    metadata: [],\n    arrows: [],\n    cubes: [],\n    spheres: [],\n    cylinders: [],\n    lines: [],\n    triangles: [],\n    texts: [],\n    models: [],\n  };\n}\n\nfunction robotEntity(time: Time): SceneEntity {\n  const e = emptyEntity(time, BASE, \"robot\");\n  const half = LENGTH_M / 2; // 0.45: front (+x) and back (-x) edges\n  const totalHalf = TOTAL_WIDTH_M / 2; // 0.6: outer edge of the tracks\n\n  // Tracks: a dark band on each side that runs the full length of the robot.\n  for (const sign of [1, -1]) {\n    e.cubes.push({\n      pose: { position: { x: 0, y: sign * TRACK_CENTER_Y, z: 0.19 }, orientation: IDENTITY },\n      size: { x: LENGTH_M, y: TRACK_WIDTH_M, z: 0.001 },\n      color: TRACK_COLOR,\n    });\n  }\n\n  // Chassis: a transparent box so the plan and the trail show through.\n  e.cubes.push({\n    pose: { position: { x: 0, y: 0, z: 0.2 }, orientation: IDENTITY },\n    size: { x: LENGTH_M, y: CHASSIS_WIDTH_M, z: 0.001 },\n    color: BODY_COLOR,\n  });\n\n  // Outline of the full footprint (chassis plus tracks): the true extents of the robot.\n  e.lines.push({\n    type: 1, // LINE_LOOP\n    pose: { position: { x: 0, y: 0, z: 0.21 }, orientation: IDENTITY },\n    thickness: 2,\n    scale_invariant: true,\n    points: [\n      { x: half, y: totalHalf, z: 0 },\n      { x: half, y: -totalHalf, z: 0 },\n      { x: -half, y: -totalHalf, z: 0 },\n      { x: -half, y: totalHalf, z: 0 },\n    ],\n    color: OUTLINE_COLOR,\n    colors: [],\n    indices: [],\n  });\n\n  // Heading: a filled triangle that points forward (+x), so the facing is clear.\n  e.triangles.push({\n    pose: { position: { x: 0, y: 0, z: 0.22 }, orientation: IDENTITY },\n    points: [\n      { x: 0.33, y: 0, z: 0 },\n      { x: 0.05, y: 0.2, z: 0 },\n      { x: 0.05, y: -0.2, z: 0 },\n    ],\n    color: HEADING_COLOR,\n    colors: [],\n    indices: [],\n  });\n\n  // base_link marker: a crosshair and a dot at the center of the frame.\n  e.lines.push({\n    type: 2, // LINE_LIST\n    pose: { position: { x: 0, y: 0, z: 0.25 }, orientation: IDENTITY },\n    thickness: 2,\n    scale_invariant: true,\n    points: [\n      { x: -0.14, y: 0, z: 0 }, { x: 0.14, y: 0, z: 0 },\n      { x: 0, y: -0.14, z: 0 }, { x: 0, y: 0.14, z: 0 },\n    ],\n    color: CENTER_COLOR,\n    colors: [],\n    indices: [],\n  });\n  e.spheres.push({\n    pose: { position: { x: 0, y: 0, z: 0.26 }, orientation: IDENTITY },\n    size: { x: 0.08, y: 0.08, z: 0.001 },\n    color: CENTER_DOT_COLOR,\n  });\n\n  // Nozzle marker (printhead tip): a cyan crosshair and dot, 0.36 m behind base_link.\n  e.lines.push({\n    type: 2, // LINE_LIST\n    pose: { position: { x: NOZZLE_X, y: 0, z: 0.25 }, orientation: IDENTITY },\n    thickness: 2,\n    scale_invariant: true,\n    points: [\n      { x: -0.1, y: 0, z: 0 }, { x: 0.1, y: 0, z: 0 },\n      { x: 0, y: -0.1, z: 0 }, { x: 0, y: 0.1, z: 0 },\n    ],\n    color: NOZZLE_COLOR,\n    colors: [],\n    indices: [],\n  });\n  e.spheres.push({\n    pose: { position: { x: NOZZLE_X, y: 0, z: 0.26 }, orientation: IDENTITY },\n    size: { x: 0.08, y: 0.08, z: 0.001 },\n    color: NOZZLE_COLOR,\n  });\n\n  // Labels, upright regardless of the robot's heading.\n  e.texts.push({\n    pose: { position: { x: 0, y: -0.14, z: 0.27 }, orientation: IDENTITY },\n    billboard: true,\n    font_size: 11,\n    scale_invariant: true,\n    color: CENTER_COLOR,\n    text: \"base_link\",\n  });\n  e.texts.push({\n    pose: { position: { x: NOZZLE_X, y: -0.14, z: 0.27 }, orientation: IDENTITY },\n    billboard: true,\n    font_size: 11,\n    scale_invariant: true,\n    color: NOZZLE_COLOR,\n    text: \"nozzle\",\n  });\n  return e;\n}\n\nfunction trailEntity(time: Time): SceneEntity {\n  const e = emptyEntity(time, MAP, \"trail\");\n  if (trail.length >= 2) {\n    e.lines.push({\n      type: 0, // LINE_STRIP\n      pose: { position: { x: 0, y: 0, z: 0 }, orientation: IDENTITY },\n      thickness: 2,\n      scale_invariant: true,\n      points: trail.slice(),\n      color: TRAIL_COLOR,\n      colors: [],\n      indices: [],\n    });\n  }\n  return e;\n}\n\n// true when the trail got a new point.\nfunction addTrailPoint(): boolean {\n  if (mapOdom === undefined || odomBase === undefined) {\n    return false;\n  }\n  const p = compose(mapOdom, odomBase).t;\n  const last = trail[trail.length - 1];\n  if (last !== undefined && Math.hypot(p.x - last.x, p.y - last.y) < MIN_STEP_M) {\n    return false;\n  }\n  trail.push({ x: p.x, y: p.y, z: 0.05 });\n  if (trail.length > MAX_POINTS) {\n    trail.shift();\n  }\n  return true;\n}\n\nexport default function script(event: Event): SceneUpdate | undefined {\n  let changed = false;\n  switch (event.topic) {\n    case \"/tf\":\n    case \"/tf_static\":\n      readTransforms(event.message);\n      changed = addTrailPoint();\n      break;\n    case \"/system_manager/loaded_plan\":\n      if (event.message.plan_uuid !== \"\" && event.message.plan_uuid !== planUuid) {\n        trail.length = 0;\n        changed = true;\n      }\n      planUuid = event.message.plan_uuid;\n      break;\n  }\n  const now = seconds(event.receiveTime);\n  if (!changed && now - lastSent < RESEND_S) {\n    return undefined;\n  }\n  lastSent = now;\n  return {\n    deletions: [],\n    entities: [robotEntity(event.receiveTime), trailEntity(event.receiveTime)],\n  };\n}\n"
     },
     "b6f1c2a0-0006-4d6e-9a51-print0mission": {
       "name": "actuator_status",
       "sourceCode": "// Actuator status table for the print_mission layout.\n//\n// One row for each actuator (drive, lift, vibe, gate) and one row for the PHCU board. The\n// columns tell who holds the actuator, its health, if it is ready, and what it does now.\n// The Table panel \"Actuators: holder, health, ready, state\" shows the rows.\n//\n// The Mission Controller refuses the green light when a health message is older than\n// health_timeout_s (1.0 s), not OK, or not ready. The health column shows the age when the\n// message is older than HEALTH_OLD_S.\n//\n// Source: scripts/actuator_status.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/act/status\",\n  \"/act/drive/health\",\n  \"/act/lift/health\",\n  \"/act/vibe/health\",\n  \"/act/gate/health\",\n  \"/act/drive/state\",\n  \"/phcu/diagnostics\",\n];\nexport const output = \"/studio_script/actuator_status\";\n\ntype Row = {\n  actuator: string;\n  holder: string; // client that holds the actuator, and the client that waits for GRANT\n  health: string; // OK, OUTAGE or FAULT, with the age when old\n  ready: string; // false = needs operator setup (for example, lift not homed)\n  state: string; // what the actuator does now\n};\n\ntype Output = {\n  rows: Row[];\n};\n\ntype Event =\n  | Input<\"/act/status\">\n  | Input<\"/act/drive/health\">\n  | Input<\"/act/lift/health\">\n  | Input<\"/act/vibe/health\">\n  | Input<\"/act/gate/health\">\n  | Input<\"/act/drive/state\">\n  | Input<\"/phcu/diagnostics\">;\n\ntype ActStatus = Input<\"/act/status\">[\"message\"];\ntype ActuatorStatus = ActStatus[\"drive\"];\ntype Health = Input<\"/act/drive/health\">[\"message\"];\ntype DriveState = Input<\"/act/drive/state\">[\"message\"];\ntype Diagnostics = Input<\"/phcu/diagnostics\">[\"message\"];\ntype Time = Input<\"/act/status\">[\"receiveTime\"];\n\n// Constants of etk_actuation_interfaces/msg/ActuatorHealth.\nconst HEALTH_NAMES = [\"OK\", \"OUTAGE\", \"FAULT\"];\n// The Mission Controller parameter health_timeout_s.\nconst HEALTH_OLD_S = 1.0;\nconst NO_DATA = \"(no data)\";\n\ntype Received<T> = { message: T; time: Time };\n\n// The last message of each input. The script runs once for each input message.\nlet act: ActStatus | undefined;\nlet drive: DriveState | undefined;\nlet diagnostics: Diagnostics | undefined;\nconst health: Record<string, Received<Health> | undefined> = {};\n\nfunction seconds(t: Time): number {\n  return t.sec + t.nsec * 1e-9;\n}\n\nfunction levelName(level: number): string {\n  switch (level) {\n    case 255:\n      return \"RC\";\n    case 100:\n      return \"UI\";\n    case 50:\n      return \"MC\";\n    default:\n      return `level ${level}`;\n  }\n}\n\nfunction holder(status: ActuatorStatus | undefined): string {\n  if (status === undefined) {\n    return NO_DATA;\n  }\n  const who = status.level === 255 ? \"RC (no client)\" : `${levelName(status.level)} (${status.level})`;\n  if (status.requested_level > 0) {\n    return `${who}; ${levelName(status.requested_level)} waits for GRANT`;\n  }\n  return who;\n}\n\nfunction healthText(actuator: string, now: Time): string {\n  const h = health[actuator];\n  if (h === undefined) {\n    return NO_DATA;\n  }\n  const text = HEALTH_NAMES[h.message.health] ?? `UNKNOWN (${h.message.health})`;\n  const age = seconds(now) - seconds(h.time);\n  return age > HEALTH_OLD_S ? `${text}, OLD (${age.toFixed(1)} s)` : text;\n}\n\nfunction readyText(actuator: string): string {\n  const h = health[actuator];\n  if (h === undefined) {\n    return NO_DATA;\n  }\n  return h.message.ready ? \"yes\" : \"NO (setup)\";\n}\n\nfunction diag(key: string): string {\n  if (diagnostics === undefined) {\n    return \"?\";\n  }\n  for (const kv of diagnostics.values) {\n    if (kv.key === key) {\n      return kv.value;\n    }\n  }\n  return \"?\";\n}\n\nfunction stale(validKey: string): string {\n  return diag(validKey) === \"false\" ? \", telemetry OLD\" : \"\";\n}\n\nfunction driveState(): string {\n  if (drive === undefined) {\n    return NO_DATA;\n  }\n  return drive.energized ? \"energized\" : \"NOT energized\";\n}\n\nfunction liftState(): string {\n  if (diagnostics === undefined) {\n    return NO_DATA;\n  }\n  return (\n    `${diag(\"lift_motion\")}, ${diag(\"lift_position_mm\")} mm -> ${diag(\"lift_target_mm\")} mm, ` +\n    `${diag(\"lift_cal\")}${stale(\"lift_valid\")}`\n  );\n}\n\nfunction vibeState(): string {\n  if (diagnostics === undefined) {\n    return NO_DATA;\n  }\n  const run = diag(\"vibe_run\") === \"true\" ? \"run\" : \"stop\";\n  const fault = diag(\"vfd_fault\") === \"true\" ? \", VFD FAULT\" : \"\";\n  return (\n    `${diag(\"vibe_state\")}, ${run}, ${diag(\"vibe_hz_actual\")} Hz (setpoint ${diag(\"vibe_hz_setpoint\")})` +\n    `${fault}${stale(\"vibe_valid\")}`\n  );\n}\n\nfunction gateState(): string {\n  if (diagnostics === undefined) {\n    return NO_DATA;\n  }\n  return `${diag(\"gate_state\")}${stale(\"gate_valid\")}`;\n}\n\nfunction phcuRow(): Row {\n  if (diagnostics === undefined) {\n    return { actuator: \"PHCU board\", holder: \"-\", health: NO_DATA, ready: \"-\", state: NO_DATA };\n  }\n  const link = diag(\"link_up\") === \"true\" ? \"link up\" : \"link DOWN\";\n  const armed = diag(\"armed\") === \"true\" ? \"gets armed\" : \"NOT armed\";\n  const faults = diag(\"faults\");\n  return {\n    actuator: \"PHCU board\",\n    holder: \"-\",\n    health: faults === \"0x0000\" ? diag(\"phcu_state\") : `${diag(\"phcu_state\")}, faults ${faults}`,\n    ready: link,\n    state: `${armed}; ${diagnostics.message}`,\n  };\n}\n\nexport default function script(event: Event): Output {\n  switch (event.topic) {\n    case \"/act/status\":\n      act = event.message;\n      break;\n    case \"/act/drive/health\":\n      health.drive = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/lift/health\":\n      health.lift = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/vibe/health\":\n      health.vibe = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/gate/health\":\n      health.gate = { message: event.message, time: event.receiveTime };\n      break;\n    case \"/act/drive/state\":\n      drive = event.message;\n      break;\n    case \"/phcu/diagnostics\":\n      diagnostics = event.message;\n      break;\n  }\n\n  const now = event.receiveTime;\n  const row = (actuator: string, status: ActuatorStatus | undefined, state: string): Row => ({\n    actuator,\n    holder: holder(status),\n    health: healthText(actuator, now),\n    ready: readyText(actuator),\n    state,\n  });\n\n  return {\n    rows: [\n      row(\"drive\", act?.drive, driveState()),\n      row(\"lift\", act?.lift, liftState()),\n      row(\"vibe\", act?.vibe, vibeState()),\n      row(\"gate\", act?.gate, gateState()),\n      phcuRow(),\n    ],\n  };\n}\n"
+    },
+    "b6f1c2a0-0007-4d6e-9a51-print0mission": {
+      "name": "cross_track",
+      "sourceCode": "// Cross-track error of the print, and segment progress, for the print_mission layout.\n//\n// Cross-track: how far the nozzle (printhead tip) is from the path that Nav2 follows. The\n// nozzle is what shapes the wall; it is 0.36 m behind base_link, so a heading error moves it\n// sideways. Sign: positive when the robot is left of the path (cross product of the piece\n// direction and the robot's offset from the piece start). The error is reported per layer, in\n// the fields layers.l1_mm .. layers.l<MAX_LAYERS>_mm, set only for the layer that prints now\n// (NaN otherwise). Every layer prints the same path, so the \"vs distance\" plot draws one line\n// per layer on the same x, with no filter.\n//\n// Segment progress: how far along the active path base_link is, as a percent, with the time\n// and the distance left. The time uses the drive odometry speed.\n//\n// The nozzle offset is hard-coded (printhead_tip_joint, base_link (-0.36, 0)): the lift TF is\n// not published in mock mode or while the lift is uncalibrated, and the lift only moves the\n// nozzle in z, which does not matter from above.\n//\n// The reference path is /path_executor/received_path: exactly the path Nav2 follows, latched,\n// in the plan frame (header.frame_id, normally map). A new path arrives at the start of each\n// drive segment. The phase and layer come from /mission_controller/mission_state, read live:\n// only the drive phases are labelled (ALIGNING -> APPROACH, PRINTING -> PRINT, RETURNING ->\n// RETURN). The pose comes from TF, map -> odom -> base_link, like robot_pose.ts (User Scripts\n// cannot import each other, so the small TF helpers are copied here).\n//\n// Note on arcs: even with perfect tracking the nozzle sits about 0.36^2 / 2r outside an arc\n// (6.5 mm at r = 10 m). Read it as geometry, not a tracking error.\n//\n// Source: scripts/cross_track.ts. make_layout.py copies this file into\n// print_mission.layout.json.\nimport { Input } from \"./types\";\n\nexport const inputs = [\n  \"/tf\",\n  \"/tf_static\",\n  \"/path_executor/received_path\",\n  \"/mission_controller/mission_state\",\n  \"/act/drive/odom\",\n];\nexport const output = \"/studio_script/cross_track\";\n\n// The \"vs distance\" plot draws one line per layer: this is the highest layer it can show.\nconst MAX_LAYERS = 9;\n\ntype Event =\n  | Input<\"/tf\">\n  | Input<\"/tf_static\">\n  | Input<\"/path_executor/received_path\">\n  | Input<\"/mission_controller/mission_state\">\n  | Input<\"/act/drive/odom\">;\ntype MissionState = Input<\"/mission_controller/mission_state\">[\"message\"];\ntype Vec = { x: number; y: number; z: number };\ntype Quat = { x: number; y: number; z: number; w: number };\ntype Pose = { t: Vec; q: Quat };\ntype Pt = { x: number; y: number };\n\ntype Output = {\n  segment: string; // APPROACH | PRINT | RETURN (the drive phase of the active path)\n  layer: number; // current layer, 1-based\n  along_m: number; // distance of base_link along the active path (x-axis of the plot)\n  seg_percent: number; // progress along the active segment, 0..100\n  remaining: { time: string; distance: string }; // time and distance left on the segment\n  layers: { [field: string]: number }; // l1_mm .. l<MAX_LAYERS>_mm: nozzle error of each layer\n};\n\nconst MAP = \"map\";\nconst ODOM = \"odom\";\nconst BASE = \"base_link\";\nconst IDENTITY = { x: 0, y: 0, z: 0, w: 1 };\n\n// printhead_tip_joint: the nozzle is 0.36 m behind base_link (x points forward).\nconst NOZZLE_X = -0.36;\n// Search the path only forward from the last piece, about this far ahead: a return loop passes\n// near itself, so a global search could jump to the wrong piece.\nconst SEARCH_AHEAD_M = 1.0;\n// Publish only after the robot moved this far along the path: keeps the rate near 10 Hz\n// instead of the TF rate, and keeps the robot still (waiting) from filling the plot.\nconst MIN_STEP_M = 0.005;\n// Below this speed, the time left is unknown (\"-\").\nconst MIN_SPEED = 0.02;\n\n// Constants of cpr_interfaces/msg/MissionState.\nconst LOP_ALIGNING = 1;\nconst LOP_PRINTING = 3;\nconst LOP_RETURNING = 5;\n\nlet mapOdom: Pose | undefined;\nlet odomBase: Pose | undefined;\nlet mission: MissionState | undefined;\nlet speed = 0; // latest |linear.x| of the drive odometry\n\nlet pathPts: Pt[] = [];\nlet cum: number[] = []; // cum[i]: path length from the start to the start of piece i\nlet segLen: number[] = []; // segLen[i]: length of piece i (points i -> i+1)\nlet pathTotal = 0; // total path length\nlet searchStart = 0; // the first piece to search from (forward only)\nlet lastAlong: number | undefined; // the along of the last published point\n\nfunction frame(id: string): string {\n  return id.startsWith(\"/\") ? id.slice(1) : id;\n}\n\nfunction multiply(a: Quat, b: Quat): Quat {\n  return {\n    w: a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,\n    x: a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y,\n    y: a.w * b.y - a.x * b.z + a.y * b.w + a.z * b.x,\n    z: a.w * b.z + a.x * b.y - a.y * b.x + a.z * b.w,\n  };\n}\n\nfunction rotate(q: Quat, v: Vec): Vec {\n  const p = multiply(multiply(q, { x: v.x, y: v.y, z: v.z, w: 0 }), { x: -q.x, y: -q.y, z: -q.z, w: q.w });\n  return { x: p.x, y: p.y, z: p.z };\n}\n\n// a then b: the pose of b's child in a's parent frame.\nfunction compose(a: Pose, b: Pose): Pose {\n  const r = rotate(a.q, b.t);\n  return { t: { x: a.t.x + r.x, y: a.t.y + r.y, z: a.t.z + r.z }, q: multiply(a.q, b.q) };\n}\n\nfunction readTransforms(message: Input<\"/tf\">[\"message\"]): void {\n  for (const tf of message.transforms) {\n    const parent = frame(tf.header.frame_id);\n    const child = frame(tf.child_frame_id);\n    const pose = { t: tf.transform.translation, q: tf.transform.rotation };\n    if (parent === MAP && child === ODOM) {\n      mapOdom = pose;\n    } else if (parent === ODOM && child === BASE) {\n      odomBase = pose;\n    }\n  }\n}\n\nfunction setPath(poses: Input<\"/path_executor/received_path\">[\"message\"][\"poses\"]): void {\n  pathPts = poses.map((ps) => ({ x: ps.pose.position.x, y: ps.pose.position.y }));\n  cum = [];\n  segLen = [];\n  let acc = 0;\n  for (let i = 0; i + 1 < pathPts.length; i++) {\n    const dx = pathPts[i + 1]!.x - pathPts[i]!.x;\n    const dy = pathPts[i + 1]!.y - pathPts[i]!.y;\n    const len = Math.hypot(dx, dy);\n    cum[i] = acc;\n    segLen[i] = len;\n    acc += len;\n  }\n  pathTotal = acc;\n  searchStart = 0;\n  lastAlong = undefined;\n}\n\n// The closest point of the path pieces [lo, hi] to p. Returns the distance along the path, the\n// signed offset (+ = left of the path), and the piece index.\nfunction project(p: Pt, lo: number, hi: number): { along: number; xte: number; piece: number } | undefined {\n  let best: { along: number; xte: number; piece: number } | undefined;\n  let bestDist = Infinity;\n  for (let i = lo; i <= hi && i < segLen.length; i++) {\n    const a = pathPts[i]!;\n    const b = pathPts[i + 1]!;\n    const dx = b.x - a.x;\n    const dy = b.y - a.y;\n    const len = segLen[i]!;\n    if (len < 1e-9) {\n      continue;\n    }\n    let t = ((p.x - a.x) * dx + (p.y - a.y) * dy) / (len * len);\n    t = Math.max(0, Math.min(1, t));\n    const projX = a.x + t * dx;\n    const projY = a.y + t * dy;\n    const dist = Math.hypot(p.x - projX, p.y - projY);\n    if (dist < bestDist) {\n      bestDist = dist;\n      const xte = (dx * (p.y - a.y) - dy * (p.x - a.x)) / len; // + = left of the path\n      best = { along: cum[i]! + t * len, xte, piece: i };\n    }\n  }\n  return best;\n}\n\n// The last piece whose start is within SEARCH_AHEAD_M of the start piece.\nfunction aheadHi(start: number): number {\n  let hi = start;\n  while (hi < segLen.length - 1 && cum[hi + 1]! - cum[start]! < SEARCH_AHEAD_M) {\n    hi++;\n  }\n  return hi;\n}\n\nfunction segmentLabel(state: number | undefined): string {\n  switch (state) {\n    case LOP_ALIGNING:\n      return \"APPROACH\";\n    case LOP_PRINTING:\n      return \"PRINT\";\n    case LOP_RETURNING:\n      return \"RETURN\";\n    default:\n      return \"\";\n  }\n}\n\nexport default function script(event: Event): Output | undefined {\n  switch (event.topic) {\n    case \"/tf\":\n    case \"/tf_static\":\n      readTransforms(event.message);\n      break;\n    case \"/path_executor/received_path\":\n      setPath(event.message.poses);\n      return undefined;\n    case \"/mission_controller/mission_state\":\n      mission = event.message;\n      return undefined;\n    case \"/act/drive/odom\":\n      speed = Math.abs(event.message.twist.twist.linear.x);\n      return undefined;\n  }\n\n  // A pose update (/tf or /tf_static): compute and maybe publish.\n  const segment = segmentLabel(mission?.state);\n  if (segment === \"\" || pathPts.length < 2 || mapOdom === undefined || odomBase === undefined) {\n    return undefined;\n  }\n  const base = compose(mapOdom, odomBase);\n  const basePt = { x: base.t.x, y: base.t.y };\n  const nozzle = compose(base, { t: { x: NOZZLE_X, y: 0, z: 0 }, q: IDENTITY });\n  const nozzlePt = { x: nozzle.t.x, y: nozzle.t.y };\n\n  const b = project(basePt, searchStart, aheadHi(searchStart));\n  if (b === undefined) {\n    return undefined;\n  }\n  searchStart = b.piece;\n  // The nozzle is just behind base_link: search a small window around its piece.\n  const n = project(nozzlePt, Math.max(0, b.piece - 3), Math.min(segLen.length - 1, b.piece + 1));\n  const nozzleXte = (n?.xte ?? b.xte) * 1000;\n\n  if (lastAlong !== undefined && Math.abs(b.along - lastAlong) < MIN_STEP_M) {\n    return undefined;\n  }\n  lastAlong = b.along;\n\n  const layerNum = mission?.current_layer ?? 0;\n  const layers: { [field: string]: number } = {};\n  for (let k = 1; k <= MAX_LAYERS; k++) {\n    layers[`l${k}_mm`] = NaN;\n  }\n  if (segment === \"PRINT\" && layerNum >= 1 && layerNum <= MAX_LAYERS) {\n    layers[`l${layerNum}_mm`] = nozzleXte;\n  }\n\n  const metersLeft = Math.max(0, pathTotal - b.along);\n  return {\n    segment,\n    layer: layerNum,\n    along_m: b.along,\n    seg_percent: pathTotal > 0 ? Math.max(0, Math.min(100, (b.along / pathTotal) * 100)) : 0,\n    remaining: {\n      time: speed > MIN_SPEED ? `${Math.round(metersLeft / speed)} s` : \"-\",\n      distance: `${metersLeft.toFixed(2)} m`,\n    },\n    layers,\n  };\n}\n"
     }
   },
   "playbackConfig": {
@@ -734,17 +905,17 @@
               "direction": "row",
               "first": "Indicator!act",
               "second": "Indicator!operator",
-              "splitPercentage": 26.09
+              "splitPercentage": 30.95
             },
-            "splitPercentage": 14.81
+            "splitPercentage": 17.65
           },
-          "splitPercentage": 25.0
+          "splitPercentage": 26.09
         },
-        "splitPercentage": 17.24
+        "splitPercentage": 18.82
       },
-      "splitPercentage": 13.0
+      "splitPercentage": 15.0
     },
     "second": "Tab!mission_tabs",
-    "splitPercentage": 10.0
+    "splitPercentage": 7.0
   }
 }
